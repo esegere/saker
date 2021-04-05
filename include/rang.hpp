@@ -121,9 +121,9 @@ namespace rang {
         inline bool supportsColor() noexcept {
             static const bool result = [] {
                 const char* Terms[]
-                        = {"ansi", "color", "console", "cygwin", "gnome",
-                           "konsole", "kterm", "linux", "msys", "putty",
-                           "rxvt", "screen", "vt100", "xterm"};
+                    = {"ansi", "color", "console", "cygwin", "gnome",
+                       "konsole", "kterm", "linux", "msys", "putty",
+                       "rxvt", "screen", "vt100", "xterm"};
                 
                 const char* env_p = std::getenv("TERM");
                 if (env_p == nullptr) {
@@ -154,10 +154,10 @@ namespace rang {
         
         template<typename T>
         using enableStd = typename std::enable_if<
-                std::is_same<T, rang::Style>::value || std::is_same<T, rang::Fg>::value
-                || std::is_same<T, rang::Bg>::value || std::is_same<T, rang::FgB>::value
-                || std::is_same<T, rang::BgB>::value || std::is_same<T, rang::Reset>::value,
-                std::ostream&>::type;
+            std::is_same<T, rang::Style>::value || std::is_same<T, rang::Fg>::value
+            || std::is_same<T, rang::Bg>::value || std::is_same<T, rang::FgB>::value
+            || std::is_same<T, rang::BgB>::value || std::is_same<T, rang::Reset>::value,
+            std::ostream&>::type;
         
         template<typename T>
         inline enableStd<T> setColor(std::ostream& os, T const value) {
@@ -198,7 +198,7 @@ namespace rang {
         rang_implementation::controlMode() = value;
     }
     
-    inline Reset getReseterForStyle(const Style& style){
+    inline Reset getReseterForStyle(const Style& style) {
         switch (style) {
             case Style::bold :
                 return Reset::bold;
