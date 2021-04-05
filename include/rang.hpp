@@ -198,6 +198,31 @@ namespace rang {
         rang_implementation::controlMode() = value;
     }
     
+    inline Reset getReseterForStyle(const Style& style){
+        switch (style) {
+            case Style::bold :
+                return Reset::bold;
+            case Style::dim :
+                return Reset::dim;
+            case Style::italic :
+                return Reset::italic;
+            case Style::underline :
+                return Reset::underline;
+            case Style::blink :
+                return Reset::blink;
+            case Style::rblink :
+                return Reset::rblink;
+            case Style::reversed :
+                return Reset::reversed;
+            case Style::conceal :
+                return Reset::conceal;
+            case Style::crossed:
+                return Reset::crossed;
+            default:
+                return Reset::all;
+        }
+    }
+    
 }  // namespace rang
 
 #endif /* ifndef RANG_DOT_HPP */
