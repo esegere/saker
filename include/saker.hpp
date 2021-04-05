@@ -13,10 +13,26 @@ namespace saker {
     using FgColor = std::variant<Fg, FgB>;
     using BgColor = std::variant<Bg, BgB>;
     
+    inline std::ostream& operator <<(std::ostream& os, const FgColor& fg_color) {
+        if (fg_color.index() == 1) {
+            return os << std::get<1>(fg_color);
+        }
+        return os << std::get<0>(fg_color);
+    }
+    
+    inline std::ostream& operator <<(std::ostream& os, const BgColor& bg_color) {
+        if (bg_color.index() == 1) {
+            return os << std::get<1>(bg_color);
+        }
+        return os << std::get<0>(bg_color);
+    }
+    
     class Zone_ {
         private:
-            std::string repr{};
-            std::string bg{};
+            FgColor zone_fg_color{};
+            BgColor zone_bg_color{};
+            Style zone_style{};
+            std::string content{};
             std::string end{};
             
             Zone_() = default;
@@ -31,10 +47,9 @@ namespace saker {
     class Zone {
         private:
             Zone_ inner;
-            std::string content;
         public:
             Zone(std::string_view sv) {
-                this->content = std::string(sv);
+                this->inner.content = sv;
             }
             
             operator Zone_&() {
@@ -42,14 +57,17 @@ namespace saker {
             }
             
             Zone& fg(FgColor zone_fg_color) {
+                this->inner.zone_fg_color = zone_fg_color;
                 return *this;
             }
             
             Zone& bg(BgColor zone_bg_color) {
+                this->inner.zone_bg_color = zone_bg_color;
                 return *this;
             }
             
             Zone& style(Style zone_style) {
+                this->inner.zone_style = zone_style;
                 return *this;
             }
     };
@@ -99,6 +117,7 @@ namespace saker {
             }
             
             Prompt& endWith(std::string_view final_chars) {
+                this->inner.end = final_chars;
                 return *this;
             }
             
@@ -108,21 +127,26 @@ namespace saker {
     };
     
     std::ostream& operator <<(std::ostream& os, const Zone_& zone) {
-        return os;
+        return os <<
+                  zone.zone_style <<
+                  zone.zone_bg_color <<
+                  zone.zone_fg_color <<
+                  zone.content <<
+                  zone.end;
     }
     
     std::ostream& operator <<(std::ostream& os, const Prompt_& prompt) {
-//        for (auto& zone : prompt.zones) {
-//            os
-//                    << prompt.global_style
-//                    << prompt.global_bg_color
-//                    << prompt.global_fg_color
-//                    << zone;
-//        }
+        for (auto& zone : prompt.zones) {
+            os <<
+               prompt.global_style <<
+               prompt.global_bg_color <<
+               prompt.global_fg_color <<
+               zone;
+        }
         return os <<
-                  Style::reset <<
-                  Fg::reset <<
-                  Bg::reset <<
+                  Reset::all <<
+                  Fg::default_ <<
+                  Bg::default_ <<
                   prompt.end;
     }
 }
