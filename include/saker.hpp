@@ -5,6 +5,7 @@
 #include <vector>
 #include <string_view>
 #include <string>
+#include <sstream>
 #include <variant>
 #include <ostream>
 
@@ -32,6 +33,7 @@ namespace saker {
             FgColor zone_fg_color{};
             BgColor zone_bg_color{};
             Style zone_style{};
+            Reset style_reseter{};
             std::string content{};
             std::string end{};
             
@@ -68,14 +70,15 @@ namespace saker {
             
             Zone& style(Style zone_style) {
                 this->inner.zone_style = zone_style;
+                this->inner.style_reseter = getReseterForStyle(zone_style);
                 return *this;
             }
     };
     
     class Prompt_ {
         private:
-            FgColor global_fg_color{};
-            BgColor global_bg_color{};
+            FgColor global_fg_color{Fg::default_};
+            BgColor global_bg_color{Bg::default_};
             Style global_style{};
             std::vector<Zone_> zones{};
             std::string end{};
@@ -132,6 +135,7 @@ namespace saker {
                   zone.zone_bg_color <<
                   zone.zone_fg_color <<
                   zone.content <<
+                  zone.style_reseter <<
                   zone.end;
     }
     
@@ -145,8 +149,6 @@ namespace saker {
         }
         return os <<
                   Reset::all <<
-                  Fg::default_ <<
-                  Bg::default_ <<
                   prompt.end;
     }
 }

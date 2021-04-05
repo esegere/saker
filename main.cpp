@@ -3,12 +3,14 @@
 
 int main() {
     std::cout << saker::Prompt{
-        saker::Zone{
-            "hello"
-        }.fg(saker::FgB::green)
+            saker::Zone{
+                    "hello"
+            }.fg(saker::FgB::red)
+                    .style(saker::Style::reversed),
+            saker::Zone{
+                    "world"
+            }.bg(saker::BgB::cyan)
     }.style(saker::Style::bold)
-    .bg(saker::BgB::gray)
-    .fg(saker::Fg::green)
-    .show()
-    << '\n';
+            .show()
+              << '\n';
 }
