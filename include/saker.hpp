@@ -3,10 +3,8 @@
 
 #include "rang.hpp"
 #include <vector>
-#include <string_view>
-#include <string>
-#include <sstream>
 #include <variant>
+#include <string>
 #include <ostream>
 
 namespace saker {
@@ -28,6 +26,13 @@ namespace saker {
         return os << std::get<0>(bg_color);
     }
     
+    inline FgColor getFgForBg(BgColor bg) {
+        if (bg.index() == 1) {
+            return getFgForBg(std::get<1>(bg));
+        }
+        return getFgForBg(std::get<0>(bg));
+    }
+    
     class Zone_ {
         private:
             FgColor zone_fg_color{};
@@ -35,6 +40,8 @@ namespace saker {
             Style zone_style{};
             Reset style_reseter{};
             std::string content{};
+            mutable std::string carried_end{};
+            mutable BgColor carried_bg{};
             std::string end{};
             
             Zone_() = default;
@@ -44,14 +51,32 @@ namespace saker {
         public:
             
             friend std::ostream& operator <<(std::ostream& os, const Zone_& zone);
+            
+            const std::string& getEnd() const {
+                return this->end;
+            }
+            
+            BgColor getBg() const {
+                return this->zone_bg_color;
+            }
+            
+            const Zone_& carriedBg(BgColor bg) const {
+                this->carried_bg = bg;
+                return *this;
+            }
+            
+            const Zone_& carriedEnd(const std::string& end) const {
+                this->carried_end = end;
+                return *this;
+            }
     };
     
     class Zone {
         private:
             Zone_ inner;
         public:
-            Zone(std::string_view sv) {
-                this->inner.content = sv;
+            Zone(const std::string& content) {
+                this->inner.content = content;
             }
             
             operator Zone_&() {
@@ -71,6 +96,11 @@ namespace saker {
             Zone& style(Style zone_style) {
                 this->inner.zone_style = zone_style;
                 this->inner.style_reseter = getReseterForStyle(zone_style);
+                return *this;
+            }
+            
+            Zone& endWith(const std::string& end) {
+                this->inner.end = end;
                 return *this;
             }
     };
@@ -98,10 +128,7 @@ namespace saker {
             Prompt_ inner;
         public:
             explicit Prompt(std::initializer_list<Zone_> zones) {
-                this->inner.zones = std::vector<Zone_>();
-                for (auto& zone : zones) {
-                    this->inner.zones.emplace_back(zone);
-                }
+                this->inner.zones = std::vector<Zone_>(zones);
             }
             
             Prompt& fg(FgColor global_fg_color) {
@@ -119,7 +146,7 @@ namespace saker {
                 return *this;
             }
             
-            Prompt& endWith(std::string_view final_chars) {
+            Prompt& endWith(const std::string& final_chars) {
                 this->inner.end = final_chars;
                 return *this;
             }
@@ -131,23 +158,33 @@ namespace saker {
     
     std::ostream& operator <<(std::ostream& os, const Zone_& zone) {
         return os <<
-                  zone.zone_style <<
                   zone.zone_bg_color <<
+                  getFgForBg(zone.carried_bg) <<
+                  zone.carried_end <<
+                  zone.zone_style <<
                   zone.zone_fg_color <<
                   zone.content <<
-                  zone.style_reseter <<
-                  zone.end;
+                  zone.style_reseter;
     }
     
     std::ostream& operator <<(std::ostream& os, const Prompt_& prompt) {
+        std::string buffered_end{};
+        BgColor buffered_bg{};
         for (auto& zone : prompt.zones) {
             os <<
                prompt.global_style <<
                prompt.global_bg_color <<
                prompt.global_fg_color <<
-               zone;
+               zone
+                   .carriedEnd(buffered_end)
+                   .carriedBg(buffered_bg);
+            
+            buffered_end = zone.getEnd();
+            buffered_bg = zone.getBg();
         }
         return os <<
+                  getFgForBg(buffered_bg) <<
+                  buffered_end <<
                   Reset::all <<
                   prompt.end;
     }
