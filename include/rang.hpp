@@ -223,6 +223,54 @@ namespace rang {
         }
     }
     
+    inline Fg getFgForBg(const Bg& bg) {
+        switch (bg) {
+            case Bg::black :
+                return Fg::black ;
+            case Bg::red :
+                return Fg::red ;
+            case Bg::green :
+                return Fg::green ;
+            case Bg::yellow :
+                return Fg::yellow ;
+            case Bg::blue :
+                return Fg::blue ;
+            case Bg::magenta :
+                return Fg::magenta ;
+            case Bg::cyan :
+                return Fg::cyan ;
+            case Bg::gray :
+                return Fg::gray ;
+            case Bg::default_ :
+                return Fg::default_ ;
+            default:
+                return Fg::unset;
+        }
+    }
+    
+    inline FgB getFgForBg(const BgB& bg) {
+        switch (bg) {
+            case BgB::black :
+                return FgB::black ;
+            case BgB::red :
+                return FgB::red ;
+            case BgB::green :
+                return FgB::green ;
+            case BgB::yellow :
+                return FgB::yellow ;
+            case BgB::blue :
+                return FgB::blue ;
+            case BgB::magenta :
+                return FgB::magenta ;
+            case BgB::cyan :
+                return FgB::cyan ;
+            case BgB::gray :
+                return FgB::gray ;
+            default:
+                return FgB::unset;
+        }
+    }
+    
 }  // namespace rang
 
 #endif /* ifndef RANG_DOT_HPP */
