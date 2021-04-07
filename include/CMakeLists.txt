@@ -2,7 +2,10 @@ add_library(saker saker.hpp)
 
 add_library(rang rang.hpp)
 
-target_link_libraries(saker rang)
+add_library(environment environment.hpp)
 
-set_target_properties(rang PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(saker rang environment)
+
 set_target_properties(saker PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(rang PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(environment PROPERTIES LINKER_LANGUAGE CXX)
