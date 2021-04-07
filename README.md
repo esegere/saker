@@ -1,7 +1,7 @@
 # Welcome to saker 👋
 [![License: Unlicense](https://img.shields.io/badge/License-Unlicense-yellow.svg)](#)
 
-> a bash prompt written in C++, also intended to be a library for writting fast prompts
+> a bash prompt written in C++, also intended to be a library for writing fast prompts
 
 ## Install
 
