@@ -6,10 +6,10 @@
 
 #include <utility>
 
-namespace env{
+namespace env {
     using WindowSize = std::pair<unsigned int, unsigned int>;
     
-    WindowSize getTermSize(){
+    WindowSize getTermSize() {
         struct winsize size;
         ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
         return std::make_pair(size.ws_col, size.ws_row);

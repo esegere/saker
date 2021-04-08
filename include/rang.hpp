@@ -129,10 +129,16 @@ namespace rang {
                 if (env_p == nullptr) {
                     return false;
                 }
-                return std::any_of(std::begin(Terms), std::end(Terms),
-                                   [&](const char* term) {
-                                       return std::strstr(env_p, term) != nullptr;
-                                   });
+                return std::any_of(
+                    std::begin(Terms),
+                    std::end(Terms),
+                    [&](const char* term) {
+                        return std::strstr(
+                            env_p,
+                            term
+                        ) != nullptr;
+                    }
+                );
             }();
             return result;
         }
@@ -174,17 +180,25 @@ namespace rang {
     }  // namespace rang_implementation
     
     template<typename T>
-    inline rang_implementation::enableStd<T> operator <<(std::ostream& os,
-                                                         const T value) {
+    inline rang_implementation::enableStd<T> operator <<(
+        std::ostream& os,
+        const T value
+    ) {
         const Control option = rang_implementation::controlMode();
         switch (option) {
             case Control::Auto:
                 return rang_implementation::supportsColor()
                        && rang_implementation::isTerminal(os.rdbuf())
-                       ? rang_implementation::setColor(os, value)
+                       ? rang_implementation::setColor(
+                        os,
+                        value
+                    )
                        : os;
             case Control::Force:
-                return rang_implementation::setColor(os, value);
+                return rang_implementation::setColor(
+                    os,
+                    value
+                );
             default:
                 return os;
         }
@@ -226,23 +240,23 @@ namespace rang {
     inline Fg getFgForBg(const Bg& bg) {
         switch (bg) {
             case Bg::black :
-                return Fg::black ;
+                return Fg::black;
             case Bg::red :
-                return Fg::red ;
+                return Fg::red;
             case Bg::green :
-                return Fg::green ;
+                return Fg::green;
             case Bg::yellow :
-                return Fg::yellow ;
+                return Fg::yellow;
             case Bg::blue :
-                return Fg::blue ;
+                return Fg::blue;
             case Bg::magenta :
-                return Fg::magenta ;
+                return Fg::magenta;
             case Bg::cyan :
-                return Fg::cyan ;
+                return Fg::cyan;
             case Bg::gray :
-                return Fg::gray ;
+                return Fg::gray;
             case Bg::default_ :
-                return Fg::default_ ;
+                return Fg::default_;
             default:
                 return Fg::unset;
         }
@@ -251,21 +265,21 @@ namespace rang {
     inline FgB getFgForBg(const BgB& bg) {
         switch (bg) {
             case BgB::black :
-                return FgB::black ;
+                return FgB::black;
             case BgB::red :
-                return FgB::red ;
+                return FgB::red;
             case BgB::green :
-                return FgB::green ;
+                return FgB::green;
             case BgB::yellow :
-                return FgB::yellow ;
+                return FgB::yellow;
             case BgB::blue :
-                return FgB::blue ;
+                return FgB::blue;
             case BgB::magenta :
-                return FgB::magenta ;
+                return FgB::magenta;
             case BgB::cyan :
-                return FgB::cyan ;
+                return FgB::cyan;
             case BgB::gray :
-                return FgB::gray ;
+                return FgB::gray;
             default:
                 return FgB::unset;
         }
