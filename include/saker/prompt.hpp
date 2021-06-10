@@ -70,6 +70,7 @@ namespace saker {
         public:
             explicit Prompt(std::initializer_list<Zone_> zones) {
                 std::vector<Zone_> valid_zones;
+                valid_zones.reserve(zones.size()); // to avoid multiple allocations
                 std::copy_if(
                     zones.begin(),
                     zones.end(),
