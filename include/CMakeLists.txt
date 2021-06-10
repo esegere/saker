@@ -1,4 +1,4 @@
-add_library(saker saker.hpp)
+add_library(saker saker.hpp saker/zone.hpp saker/prompt.hpp)
 
 add_library(rang rang.hpp)
 

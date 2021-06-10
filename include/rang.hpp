@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <variant>
 
 namespace rang {
 
@@ -105,6 +106,9 @@ namespace rang {
     };
 // Use rang::setWinTermMode to explicitly set terminal API for Windows
 // Calling rang::setWinTermMode have no effect on other OS
+    
+    using FgColor = std::variant<Fg, FgB>;
+    using BgColor = std::variant<Bg, BgB>;
     
     namespace rang_implementation {
         
@@ -283,6 +287,27 @@ namespace rang {
             default:
                 return FgB::unset;
         }
+    }
+    
+    inline std::ostream& operator <<(std::ostream& os, const FgColor& fg_color) {
+        if (fg_color.index() == 1) {
+            return os << std::get<1>(fg_color);
+        }
+        return os << std::get<0>(fg_color);
+    }
+    
+    inline std::ostream& operator <<(std::ostream& os, const BgColor& bg_color) {
+        if (bg_color.index() == 1) {
+            return os << std::get<1>(bg_color);
+        }
+        return os << std::get<0>(bg_color);
+    }
+    
+    inline FgColor getFgForBg(BgColor bg) {
+        if (bg.index() == 1) {
+            return getFgForBg(std::get<1>(bg));
+        }
+        return getFgForBg(std::get<0>(bg));
     }
     
 }  // namespace rang
