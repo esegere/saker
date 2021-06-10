@@ -7,7 +7,9 @@ int main() {
     
                   saker::Zone{
         
-                      " hello "
+                      saker::Content{
+                          "Hello"
+                      }
         
                   }.bg(saker::Bg::green)
                    .priority(1)
@@ -15,7 +17,9 @@ int main() {
     
                   saker::Zone{
         
-                      " marvelous "
+                      saker::Content{
+                          " marvelous "
+                      }
         
                   }.bg(saker::Bg::cyan)
                    .priority(2)
@@ -23,14 +27,18 @@ int main() {
     
                   saker::Zone{
         
-                      " world "
+                      saker::Content{
+                          " world "
+                      }
         
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .endWith("\ue0b0"),
     
                   saker::Zone{
+        
                       " this is not shown "
+        
                   }.showIf(false),
     
               }.fg(saker::Fg::black)

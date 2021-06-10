@@ -7,6 +7,12 @@
 #include <ostream>
 #include <numeric>
 #include <algorithm>
+#include <any>
+
+#include "content.hpp"
+
+#include "rang.hpp"
+#include "environment.hpp"
 
 namespace saker {
     
@@ -25,10 +31,10 @@ namespace saker {
             FgColor zone_fg_color{};
             BgColor zone_bg_color{};
             Style zone_style{};
-            std::string content{};
+            Content content;
             std::string end{};
             
-            Zone_() = default;
+            Zone_(const Content& content) : content(content) {}
             
             friend class Zone;
         
@@ -109,12 +115,13 @@ namespace saker {
             }
     };
     
+    
     class Zone {
         private:
             inline static unsigned int next_index{};
             Zone_ inner;
         public:
-            Zone(const std::string& content) {
+            Zone(const Content& content) : inner(content) {
                 this->inner.order = next_index++;
                 this->inner.content = content;
             }

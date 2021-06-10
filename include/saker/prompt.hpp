@@ -7,7 +7,12 @@
 #include <ostream>
 #include <numeric>
 #include <algorithm>
+
+#include "content.hpp"
 #include "zone.hpp"
+
+#include "rang.hpp"
+#include "environment.hpp"
 
 namespace saker {
     
