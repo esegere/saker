@@ -64,7 +64,16 @@ namespace saker {
         
         public:
             explicit Prompt(std::initializer_list<Zone_> zones) {
-                this->inner.zones = std::vector<Zone_>(zones);
+                std::vector<Zone_> valid_zones;
+                std::copy_if(
+                    zones.begin(),
+                    zones.end(),
+                    std::back_inserter(valid_zones),
+                    [](Zone_ zone) {
+                        return zone.isToBeShown();
+                    }
+                );
+                this->inner.zones = valid_zones;
             }
             
             Prompt& fg(FgColor global_fg_color) {

@@ -15,6 +15,7 @@ namespace saker {
     class Zone_ {
         private:
             // helpers
+            bool to_be_shown{true};
             unsigned int order{};
             unsigned int priority{};
             Reset style_reseter{};
@@ -94,15 +95,18 @@ namespace saker {
             unsigned int size() const {
                 return this->content.size() + this->end.size();
             }
-            
+        
             unsigned int getPriority() const {
                 return this->priority;
             }
-            
+        
             unsigned int getOrder() const {
                 return this->order;
             }
         
+            bool isToBeShown() const {
+                return this->to_be_shown;
+            }
     };
     
     class Zone {
@@ -133,17 +137,22 @@ namespace saker {
                 this->inner.setIfNotStyle(zone_style);
                 return *this;
             }
-            
+        
             Zone& endWith(const std::string& end) {
                 this->inner.end = end;
                 return *this;
             }
-            
+        
             Zone& priority(unsigned int priority) {
                 this->inner.priority = priority;
                 return *this;
             }
         
+            Zone& showIf(bool condition) {
+                this->inner.to_be_shown = condition;
+                return *this;
+            }
+    
     };
     
     std::ostream& operator <<(std::ostream& os, const Zone_& zone) {

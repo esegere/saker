@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)#include <vector>
+#include <variant>
+#include <string>
+#include <ostream>
+#include <numeric>
+#include <algorithm>
 project(prompt)
 
 set(CMAKE_CXX_STANDARD 17)

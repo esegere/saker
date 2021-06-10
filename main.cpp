@@ -29,6 +29,10 @@ int main() {
                    .bg(saker::BgB::black)
                    .endWith("\ue0b0"),
     
+                  saker::Zone{
+                      " this is not shown "
+                  }.showIf(false),
+    
               }.fg(saker::Fg::black)
                .endWith(" ")
                .maxSize(50)
