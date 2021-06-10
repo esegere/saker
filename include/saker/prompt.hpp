@@ -78,7 +78,7 @@ namespace saker {
                         return zone.isToBeShown();
                     }
                 );
-                this->inner.zones = valid_zones;
+                this->inner.zones = std::move(valid_zones);
             }
             
             Prompt& fg(FgColor global_fg_color) {
