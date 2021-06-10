@@ -26,19 +26,19 @@ int main() {
                    .endWith("\ue0b4"),
     
                   saker::Zone{
-        
+    
                       saker::Content{
-                          " world "
-                      }
+                          std::vector<std::string>({"w", "o", "r", "l", "d"})
+                      }.separatedBy("|")
         
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .endWith("\ue0b0"),
     
                   saker::Zone{
-        
+    
                       " this is not shown "
-        
+    
                   }.showIf(false),
     
               }.fg(saker::Fg::black)
@@ -47,4 +47,6 @@ int main() {
                .show()
 
               << '\n';
+    
+    auto var = std::vector({"w", "o", "r", "l", "d"});
 }

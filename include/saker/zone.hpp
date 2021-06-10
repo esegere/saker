@@ -115,7 +115,6 @@ namespace saker {
             }
     };
     
-    
     class Zone {
         private:
             inline static unsigned int next_index{};
