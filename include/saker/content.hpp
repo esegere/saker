@@ -15,7 +15,7 @@ namespace saker {
         if (ms.index() == 0) {
             return std::get<0>(ms).size();
         }
-        auto value = std::get<1>(ms);
+        const auto value = std::get<1>(ms);
         return std::accumulate(
             value.begin(),
             value.end(),
@@ -38,6 +38,8 @@ namespace saker {
             Style font_style{};
             Style prev_style{};
             Style separator_style{};
+            Reset font_style_reset{};
+            Reset separator_style_reset{};
             // to show
             std::string separator{};
             multi_string actual_content{};
@@ -45,6 +47,8 @@ namespace saker {
             friend std::ostream& operator <<(std::ostream&, const Content&);
         
             friend class Zone_;
+        
+            friend class Zone;
         
             unsigned int size() const {
                 unsigned int size_without_separator = size_of_ms(this->actual_content);
@@ -61,6 +65,40 @@ namespace saker {
                 this->prev_bg = prev_bg;
                 this->prev_fg = prev_fg;
                 this->prev_style = prev_style;
+                return *this;
+            }
+        
+            Content& setIfNotStyle(Style content_style) {
+                if (static_cast<int>(content_style) == 0) {
+                    this->font_style = content_style;
+                    this->font_style_reset = getReseterForStyle(content_style);
+                }
+                return *this;
+            }
+        
+            Content& setIfNotBg(BgColor bg_color) {
+                const auto intReprOfBg = [](BgColor bg) -> int {
+                    if (bg.index() == 1) {
+                        return static_cast<int>(std::get<1>(bg));
+                    }
+                    return static_cast<int>(std::get<0>(bg));
+                };
+                if (intReprOfBg(this->bg_color) == 0) {
+                    this->bg_color = bg_color;
+                }
+                return *this;
+            }
+        
+            Content& setIfNotFg(FgColor fg_color) {
+                const auto intReprOfFg = [](FgColor fg) -> int {
+                    if (fg.index() == 1) {
+                        return static_cast<int>(std::get<1>(fg));
+                    }
+                    return static_cast<int>(std::get<0>(fg));
+                };
+                if (intReprOfFg(this->fg_color) == 0) {
+                    this->fg_color = fg_color;
+                }
                 return *this;
             }
     
@@ -112,7 +150,7 @@ namespace saker {
     std::ostream& operator <<(std::ostream& os, const Content& content) {
     
         if (content.actual_content.index() == 1) { //if vector
-            auto vector_content = std::get<1>(content.actual_content);
+            const auto vector_content = std::get<1>(content.actual_content);
             std::for_each(
                 vector_content.begin(),
                 vector_content.end() - 1,
@@ -123,6 +161,7 @@ namespace saker {
                        content.separator_bg <<
                        content.separator_style <<
                        content.separator << // actual separator string
+                       content.separator_style_reset <<
                        content.fg_color <<
                        content.bg_color <<
                        content.font_style;
@@ -134,7 +173,8 @@ namespace saker {
                content.bg_color <<
                content.fg_color <<
                content.font_style <<
-               std::get<0>(content.actual_content);
+               std::get<0>(content.actual_content) <<
+               content.font_style_reset;
         }
         return os <<
                   content.prev_bg <<

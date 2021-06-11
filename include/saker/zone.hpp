@@ -44,6 +44,7 @@ namespace saker {
                 if (static_cast<int>(zone_style) == 0) {
                     this->zone_style = zone_style;
                     this->style_reseter = getReseterForStyle(zone_style);
+                    this->content.setIfNotStyle(zone_style);
                 }
                 return *this;
             }
@@ -57,6 +58,7 @@ namespace saker {
                 };
                 if (intReprOfBg(this->zone_bg_color) == 0) {
                     this->zone_bg_color = bg_color;
+                    this->content.setIfNotBg(bg_color);
                 }
                 return *this;
             }
@@ -70,6 +72,7 @@ namespace saker {
                 };
                 if (intReprOfFg(this->zone_fg_color) == 0) {
                     this->zone_fg_color = fg_color;
+                    this->content.setIfNotFg(fg_color);
                 }
                 return *this;
             }
@@ -131,16 +134,19 @@ namespace saker {
             
             Zone& fg(FgColor zone_fg_color) {
                 this->inner.zone_fg_color = zone_fg_color;
+                this->inner.content.setIfNotFg(zone_fg_color);
                 return *this;
             }
             
             Zone& bg(BgColor zone_bg_color) {
                 this->inner.zone_bg_color = zone_bg_color;
+                this->inner.content.setIfNotBg(zone_bg_color);
                 return *this;
             }
             
             Zone& style(Style zone_style) {
                 this->inner.setIfNotStyle(zone_style);
+                this->inner.content.setIfNotStyle(zone_style);
                 return *this;
             }
         

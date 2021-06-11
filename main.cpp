@@ -8,7 +8,7 @@ int main() {
                   saker::Zone{
         
                       saker::Content{
-                          "Hello"
+                          "dellneon"
                       }
         
                   }.bg(saker::Bg::green)
@@ -18,7 +18,7 @@ int main() {
                   saker::Zone{
         
                       saker::Content{
-                          " marvelous "
+                          " esege "
                       }
         
                   }.bg(saker::Bg::cyan)
@@ -28,8 +28,9 @@ int main() {
                   saker::Zone{
     
                       saker::Content{
-                          std::vector<std::string>({"w", "o", "r", "l", "d"})
-                      }.separatedBy("|")
+                          std::vector<std::string>({" home", "esege", "Codes "})
+                      }.separatedBy(" \uE0B1 ")
+                       .separatorFg(saker::Fg::black)
         
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
