@@ -176,17 +176,19 @@ namespace saker {
                 this->inner.end = end;
                 return *this;
             }
-            
+        
             Zone& priority(unsigned int priority) {
                 this->inner.priority = priority;
                 return *this;
             }
-            
+        
             Zone& showIf(bool condition) {
                 this->inner.to_be_shown = condition;
                 return *this;
             }
         
+            // TODO: add partial_content_if_cant_fit *still thinking about name* to show partially if space is not enough
+    
     };
     
     std::ostream& operator <<(std::ostream& os, const Zone_& zone) {
