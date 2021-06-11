@@ -61,18 +61,12 @@ namespace saker {
                        ));
             }
         
-            Content& setPreviousValues(FgColor prev_fg, BgColor prev_bg, Style prev_style) {
-                this->prev_bg = prev_bg;
-                this->prev_fg = prev_fg;
-                this->prev_style = prev_style;
-                return *this;
-            }
-        
             Content& setIfNotStyle(Style content_style) {
-                if (static_cast<int>(content_style) == 0) {
+                if (static_cast<int>(this->font_style) == 0) {
                     this->font_style = content_style;
                     this->font_style_reset = getReseterForStyle(content_style);
                 }
+                setIfNotStyleSep(content_style);
                 return *this;
             }
         
@@ -86,6 +80,7 @@ namespace saker {
                 if (intReprOfBg(this->bg_color) == 0) {
                     this->bg_color = bg_color;
                 }
+                setIfNotBgSep(bg_color);
                 return *this;
             }
         
@@ -98,6 +93,41 @@ namespace saker {
                 };
                 if (intReprOfFg(this->fg_color) == 0) {
                     this->fg_color = fg_color;
+                }
+                setIfNotFgSep(fg_color);
+                return *this;
+            }
+        
+            Content& setIfNotStyleSep(Style content_style) {
+                if (static_cast<int>(content_style) == 0) {
+                    this->separator_style = content_style;
+                    this->separator_style_reset = getReseterForStyle(content_style);
+                }
+                return *this;
+            }
+        
+            Content& setIfNotBgSep(BgColor bg_color) {
+                const auto intReprOfBg = [](BgColor bg) -> int {
+                    if (bg.index() == 1) {
+                        return static_cast<int>(std::get<1>(bg));
+                    }
+                    return static_cast<int>(std::get<0>(bg));
+                };
+                if (intReprOfBg(this->separator_bg) == 0) {
+                    this->separator_bg = bg_color;
+                }
+                return *this;
+            }
+        
+            Content& setIfNotFgSep(FgColor fg_color) {
+                const auto intReprOfFg = [](FgColor fg) -> int {
+                    if (fg.index() == 1) {
+                        return static_cast<int>(std::get<1>(fg));
+                    }
+                    return static_cast<int>(std::get<0>(fg));
+                };
+                if (intReprOfFg(this->separator_fg) == 0) {
+                    this->separator_fg = fg_color;
                 }
                 return *this;
             }
@@ -148,6 +178,10 @@ namespace saker {
     
     
     std::ostream& operator <<(std::ostream& os, const Content& content) {
+        os <<
+           content.bg_color <<
+           content.fg_color <<
+           content.font_style;
     
         if (content.actual_content.index() == 1) { //if vector
             const auto vector_content = std::get<1>(content.actual_content);
@@ -170,9 +204,6 @@ namespace saker {
             os << vector_content.back();
         } else { //if string
             os <<
-               content.bg_color <<
-               content.fg_color <<
-               content.font_style <<
                std::get<0>(content.actual_content) <<
                content.font_style_reset;
         }

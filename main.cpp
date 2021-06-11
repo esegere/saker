@@ -16,22 +16,32 @@ int main() {
                    .endWith("\ue0b4"),
     
                   saker::Zone{
-        
+    
                       saker::Content{
                           " esege "
+                      },
+    
+                      saker::Icon{
+                          "\uF007 "
                       }
-        
+    
                   }.bg(saker::Bg::cyan)
                    .priority(2)
                    .endWith("\ue0b4"),
     
                   saker::Zone{
     
+                      saker::Icon{
+                          "\uF31B "
+                      },
+    
                       saker::Content{
+        
                           std::vector<std::string>({" home", "esege", "Codes "})
+        
                       }.separatedBy(" \uE0B1 ")
                        .separatorFg(saker::Fg::black)
-        
+    
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .endWith("\ue0b0"),

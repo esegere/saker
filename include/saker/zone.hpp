@@ -21,6 +21,7 @@ namespace saker {
     class Zone_ {
         private:
             // helpers
+            bool show_icon_first{true};
             bool to_be_shown{true};
             unsigned int order{};
             unsigned int priority{};
@@ -32,6 +33,7 @@ namespace saker {
             BgColor zone_bg_color{};
             Style zone_style{};
             Content content;
+            Icon icon{};
             std::string end{};
             
             Zone_(const Content& content) : content(content) {}
@@ -45,6 +47,7 @@ namespace saker {
                     this->zone_style = zone_style;
                     this->style_reseter = getReseterForStyle(zone_style);
                     this->content.setIfNotStyle(zone_style);
+                    this->icon.setIfNotStyle(zone_style);
                 }
                 return *this;
             }
@@ -59,6 +62,7 @@ namespace saker {
                 if (intReprOfBg(this->zone_bg_color) == 0) {
                     this->zone_bg_color = bg_color;
                     this->content.setIfNotBg(bg_color);
+                    this->icon.setIfNotBg(bg_color);
                 }
                 return *this;
             }
@@ -73,6 +77,7 @@ namespace saker {
                 if (intReprOfFg(this->zone_fg_color) == 0) {
                     this->zone_fg_color = fg_color;
                     this->content.setIfNotFg(fg_color);
+                    this->icon.setIfNotFg(fg_color);
                 }
                 return *this;
             }
@@ -128,6 +133,20 @@ namespace saker {
                 this->inner.content = content;
             }
             
+            Zone(const Icon& icon, const Content& content) : inner(content) {
+                this->inner.order = next_index++;
+                this->inner.content = content;
+                this->inner.show_icon_first = true;
+                this->inner.icon = icon;
+            }
+            
+            Zone(const Content& content, const Icon& icon) : inner(content) {
+                this->inner.order = next_index++;
+                this->inner.content = content;
+                this->inner.show_icon_first = false;
+                this->inner.icon = icon;
+            }
+            
             operator Zone_&() {
                 return this->inner;
             }
@@ -135,46 +154,55 @@ namespace saker {
             Zone& fg(FgColor zone_fg_color) {
                 this->inner.zone_fg_color = zone_fg_color;
                 this->inner.content.setIfNotFg(zone_fg_color);
+                this->inner.icon.setIfNotFg(zone_fg_color);
                 return *this;
             }
             
             Zone& bg(BgColor zone_bg_color) {
                 this->inner.zone_bg_color = zone_bg_color;
                 this->inner.content.setIfNotBg(zone_bg_color);
+                this->inner.icon.setIfNotBg(zone_bg_color);
                 return *this;
             }
             
             Zone& style(Style zone_style) {
                 this->inner.setIfNotStyle(zone_style);
                 this->inner.content.setIfNotStyle(zone_style);
+                this->inner.icon.setIfNotStyle(zone_style);
                 return *this;
             }
-        
+            
             Zone& endWith(const std::string& end) {
                 this->inner.end = end;
                 return *this;
             }
-        
+            
             Zone& priority(unsigned int priority) {
                 this->inner.priority = priority;
                 return *this;
             }
-        
+            
             Zone& showIf(bool condition) {
                 this->inner.to_be_shown = condition;
                 return *this;
             }
-    
+        
     };
     
     std::ostream& operator <<(std::ostream& os, const Zone_& zone) {
+        os <<
+           zone.zone_bg_color <<
+           getFgForBg(zone.carried_bg) <<
+           zone.carried_end <<
+           zone.zone_style <<
+           zone.zone_fg_color <<
+           zone.zone_bg_color;
+        if (zone.show_icon_first) {
+            os << zone.icon << zone.content;
+        } else {
+            os << zone.content << zone.icon;
+        }
         return os <<
-                  zone.zone_bg_color <<
-                  getFgForBg(zone.carried_bg) <<
-                  zone.carried_end <<
-                  zone.zone_style <<
-                  zone.zone_fg_color <<
-                  zone.content <<
                   zone.style_reseter;
     }
 }
