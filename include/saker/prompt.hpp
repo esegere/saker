@@ -116,6 +116,7 @@ namespace saker {
             }
             
             Prompt_& show() {
+                setControlMode(rang::Control::Force); // rang
                 this->renderZones();
                 return this->inner;
             }
