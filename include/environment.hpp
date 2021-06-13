@@ -11,7 +11,7 @@ namespace env {
     
     WindowSize getTermSize() {
         struct winsize size;
-        ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+        ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
         return std::make_pair(size.ws_col, size.ws_row);
     }
     
