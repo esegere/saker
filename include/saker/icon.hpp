@@ -37,12 +37,6 @@ namespace saker {
             }
             
             Icon& setIfNotBg(BgColor bg_color) {
-                const auto intReprOfBg = [](BgColor bg) -> int {
-                    if (bg.index() == 1) {
-                        return static_cast<int>(std::get<1>(bg));
-                    }
-                    return static_cast<int>(std::get<0>(bg));
-                };
                 if (intReprOfBg(this->bg_color) == 0) {
                     this->bg_color = bg_color;
                 }
@@ -50,12 +44,6 @@ namespace saker {
             }
             
             Icon& setIfNotFg(FgColor fg_color) {
-                const auto intReprOfFg = [](FgColor fg) -> int {
-                    if (fg.index() == 1) {
-                        return static_cast<int>(std::get<1>(fg));
-                    }
-                    return static_cast<int>(std::get<0>(fg));
-                };
                 if (intReprOfFg(this->fg_color) == 0) {
                     this->fg_color = fg_color;
                 }

@@ -71,12 +71,6 @@ namespace saker {
             }
         
             Content& setIfNotBg(BgColor bg_color) {
-                const auto intReprOfBg = [](BgColor bg) -> int {
-                    if (bg.index() == 1) {
-                        return static_cast<int>(std::get<1>(bg));
-                    }
-                    return static_cast<int>(std::get<0>(bg));
-                };
                 if (intReprOfBg(this->bg_color) == 0) {
                     this->bg_color = bg_color;
                 }
@@ -85,12 +79,6 @@ namespace saker {
             }
         
             Content& setIfNotFg(FgColor fg_color) {
-                const auto intReprOfFg = [](FgColor fg) -> int {
-                    if (fg.index() == 1) {
-                        return static_cast<int>(std::get<1>(fg));
-                    }
-                    return static_cast<int>(std::get<0>(fg));
-                };
                 if (intReprOfFg(this->fg_color) == 0) {
                     this->fg_color = fg_color;
                 }
@@ -107,12 +95,6 @@ namespace saker {
             }
         
             Content& setIfNotBgSep(BgColor bg_color) {
-                const auto intReprOfBg = [](BgColor bg) -> int {
-                    if (bg.index() == 1) {
-                        return static_cast<int>(std::get<1>(bg));
-                    }
-                    return static_cast<int>(std::get<0>(bg));
-                };
                 if (intReprOfBg(this->separator_bg) == 0) {
                     this->separator_bg = bg_color;
                 }
@@ -120,12 +102,6 @@ namespace saker {
             }
         
             Content& setIfNotFgSep(FgColor fg_color) {
-                const auto intReprOfFg = [](FgColor fg) -> int {
-                    if (fg.index() == 1) {
-                        return static_cast<int>(std::get<1>(fg));
-                    }
-                    return static_cast<int>(std::get<0>(fg));
-                };
                 if (intReprOfFg(this->separator_fg) == 0) {
                     this->separator_fg = fg_color;
                 }

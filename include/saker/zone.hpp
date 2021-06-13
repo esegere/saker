@@ -53,12 +53,6 @@ namespace saker {
             }
             
             Zone_& setIfNotBg(BgColor bg_color) {
-                const auto intReprOfBg = [](BgColor bg) -> int {
-                    if (bg.index() == 1) {
-                        return static_cast<int>(std::get<1>(bg));
-                    }
-                    return static_cast<int>(std::get<0>(bg));
-                };
                 if (intReprOfBg(this->zone_bg_color) == 0) {
                     this->zone_bg_color = bg_color;
                     this->content.setIfNotBg(bg_color);
@@ -68,12 +62,6 @@ namespace saker {
             }
             
             Zone_& setIfNotFg(FgColor fg_color) {
-                const auto intReprOfFg = [](FgColor fg) -> int {
-                    if (fg.index() == 1) {
-                        return static_cast<int>(std::get<1>(fg));
-                    }
-                    return static_cast<int>(std::get<0>(fg));
-                };
                 if (intReprOfFg(this->zone_fg_color) == 0) {
                     this->zone_fg_color = fg_color;
                     this->content.setIfNotFg(fg_color);

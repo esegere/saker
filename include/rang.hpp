@@ -310,6 +310,20 @@ namespace rang {
         return getFgForBg(std::get<0>(bg));
     }
     
+    inline int intReprOfBg(BgColor bg) {
+        if (bg.index() == 1) {
+            return static_cast<int>(std::get<1>(bg));
+        }
+        return static_cast<int>(std::get<0>(bg));
+    }
+    
+    inline int intReprOfFg(FgColor fg) {
+        if (fg.index() == 1) {
+            return static_cast<int>(std::get<1>(fg));
+        }
+        return static_cast<int>(std::get<0>(fg));
+    };
+    
 }  // namespace rang
 
 #endif /* ifndef RANG_DOT_HPP */
