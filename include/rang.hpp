@@ -177,7 +177,7 @@ namespace rang {
                         return os;
                     }
                 default:
-                    return os << "\033[" << int_value << "m";
+                    return os << "\\[\033[" << int_value << "m\\]";
             }
         }
         
