@@ -9,6 +9,7 @@ int main(int argc, const char* argv[]) {
     
     // presets
     const auto[hosticon, hostname] = userdata::get_host_icon_and_name();
+    const auto[usericon, username, userbg] = userdata::get_user_icon_name_and_bg();
     int line_number;
     cli("l", "0") >> line_number;
     int prev_error_code;
@@ -16,7 +17,7 @@ int main(int argc, const char* argv[]) {
     
     std::cout <<
               saker::Prompt{
-        
+    
                   saker::Zone{ // line number
                       std::to_string(line_number)
                   }.bg(saker::Bg::black)
@@ -25,20 +26,20 @@ int main(int argc, const char* argv[]) {
                    .endWith("\ue0b4")
                    .priority(3)
                    .showIf(line_number > 0),
+    
+                  saker::Zone{ // error code of previous comand
         
-                  saker::Zone{
-            
                       saker::Icon{
                           " \uF071 "
                       },
-            
+        
                       std::to_string(prev_error_code)
-            
+        
                   }.bg(saker::Bg::red)
                    .priority(4)
                    .endWith("\ue0b4")
                    .showIf(prev_error_code > 0),
-        
+    
                   saker::Zone{ // host
             
                       saker::Icon{
@@ -52,20 +53,20 @@ int main(int argc, const char* argv[]) {
                   }.bg(saker::Bg::green)
                    .priority(2)
                    .endWith("\ue0b4"),
-        
+    
                   saker::Zone{ // user
-            
-                      saker::Icon{
-                          " \uF007 "
-                      },
-            
-                      saker::Content{
-                          userdata::get_user()
-                      }
-            
-                  }.bg(saker::Bg::cyan)
-                   .endWith("\ue0b4"),
         
+                      saker::Icon{
+                          usericon
+                      },
+        
+                      saker::Content{
+                          username
+                      }
+        
+                  }.bg(userbg)
+                   .endWith("\ue0b4"),
+    
                   saker::Zone{ // directory
             
                       saker::Content{

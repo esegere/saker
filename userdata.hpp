@@ -9,6 +9,7 @@
 #include <fplus/fwd.hpp>
 #include <unistd.h>
 #include <climits>
+#include "saker.hpp"
 
 namespace userdata {
     
@@ -46,8 +47,20 @@ namespace userdata {
         return result_string_parts;
     }
     
-    std::string get_user() {
-        return getlogin();
+    std::tuple<std::string, std::string, saker::BgColor> get_user_icon_name_and_bg() {
+        std::string user = getenv("USER");
+        std::string user_icon;
+        saker::BgColor bg = saker::Bg::cyan;
+        if (user == "esege") {
+            user_icon = " \uF007 ";
+        } else if (user == "root") {
+            user_icon = " \uF21B ";
+            bg = saker::Bg::blue;
+        } else {
+            user_icon = " \uF0C0 ";
+            bg = saker::BgB::gray;
+        }
+        return {user_icon, user, bg};
     }
     
     std::pair<std::string, std::string> get_host_icon_and_name() {

@@ -107,14 +107,18 @@ namespace saker {
                 this->inner.end = final_chars;
                 return *this;
             }
-            
+        
             Prompt& maxSize(unsigned int max_percentage) {
                 if (max_percentage <= 100) {
                     this->inner.max_size = max_percentage;
                 }
                 return *this;
             }
-            
+        
+            // TODO: add a default minimal prompt style for very minimal situations
+        
+            // TODO: add support for non-powerline style switching
+        
             Prompt_& show() {
                 setControlMode(rang::Control::Force); // rang
                 this->renderZones();

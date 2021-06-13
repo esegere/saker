@@ -12,3 +12,7 @@ include_directories(include)
 
 target_link_libraries(saker-prompt saker FunctionalPlus::fplus)
 
+install(
+        TARGETS saker-prompt
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)
