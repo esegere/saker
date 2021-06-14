@@ -10,6 +10,7 @@ int main(int argc, const char* argv[]) {
     // presets
     const auto[hosticon, hostname] = userdata::get_host_icon_and_name();
     const auto[usericon, username, userbg] = userdata::get_user_icon_name_and_bg();
+    const auto[diricon, dirparts] = userdata::get_directory_icon_and_parts();
     int line_number;
     cli("l", "0") >> line_number;
     int prev_error_code;
@@ -68,12 +69,16 @@ int main(int argc, const char* argv[]) {
                    .endWith("\ue0b4"),
     
                   saker::Zone{ // directory
-            
+        
+                      saker::Icon{
+                          diricon
+                      },
+        
                       saker::Content{
-                          userdata::get_directory_parts()
-                      }.separatedBy(" \uE0B1 ")
+                          dirparts
+                      }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
-            
+        
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .priority(10)

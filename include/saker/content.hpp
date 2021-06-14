@@ -29,6 +29,8 @@ namespace saker {
     class Content {
         private:
             //helpers
+            bool start_with_separator{false};
+            bool end_with_separator{false};
             FgColor fg_color{};
             FgColor prev_fg{};
             FgColor separator_fg{};
@@ -57,8 +59,10 @@ namespace saker {
                 }
                 return size_without_separator +
                        (this->separator.size() * (
-                           std::get<1>(this->actual_content).size() - 1
-                       ));
+                                                     std::get<1>(this->actual_content).size() - 1 +
+                                                     static_cast<int>(this->start_with_separator) +
+                                                     static_cast<int>(this->end_with_separator)
+                                                 ));
             }
         
             Content& setIfNotStyle(Style content_style) {
@@ -120,19 +124,23 @@ namespace saker {
                 this->fg_color = content_fg_color;
                 return *this;
             }
-            
+        
             Content& bg(BgColor content_bg_color) {
                 this->bg_color = content_bg_color;
                 return *this;
             }
-            
+        
             Content& style(Style content_style) {
                 this->font_style = content_style;
                 return *this;
             }
         
-            Content& separatedBy(const std::string& separator) {
+            Content& separatedBy(
+                const std::string& separator, bool start_with_separator = false, bool end_with_separator = false
+            ) {
                 this->separator = separator;
+                this->start_with_separator = start_with_separator;
+                this->end_with_separator = end_with_separator;
                 return *this;
             }
         
@@ -161,6 +169,23 @@ namespace saker {
     
         if (content.actual_content.index() == 1) { //if vector
             const auto vector_content = std::get<1>(content.actual_content);
+            if (vector_content.empty()) {
+                return os <<
+                          content.prev_bg <<
+                          content.prev_fg <<
+                          content.prev_style;
+            }
+            if (content.start_with_separator) {
+                os <<
+                   content.separator_fg <<
+                   content.separator_bg <<
+                   content.separator_style <<
+                   content.separator << // actual separator string
+                   content.separator_style_reset <<
+                   content.fg_color <<
+                   content.bg_color <<
+                   content.font_style;
+            }
             std::for_each(
                 vector_content.begin(),
                 vector_content.end() - 1,
@@ -178,6 +203,17 @@ namespace saker {
                 }
             );
             os << vector_content.back();
+            if (content.end_with_separator) {
+                os <<
+                   content.separator_fg <<
+                   content.separator_bg <<
+                   content.separator_style <<
+                   content.separator << // actual separator string
+                   content.separator_style_reset <<
+                   content.fg_color <<
+                   content.bg_color <<
+                   content.font_style;
+            }
         } else { //if string
             os <<
                std::get<0>(content.actual_content) <<

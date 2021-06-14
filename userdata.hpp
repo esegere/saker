@@ -14,14 +14,14 @@
 namespace userdata {
     
     
-    std::vector<std::string> get_directory_parts() {
+    std::pair<std::string, std::vector<std::string>> get_directory_icon_and_parts() {
         // modify only this parameters
-        
+    
         constexpr const char* DEFAULT_ICON = "\uf023";
         constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 2;
         const std::map<std::string, std::string> ICONS = icons::special_dirs();
         // creation
-        
+    
         const std::string path = get_current_dir_name();
         std::string selected_icon{DEFAULT_ICON};
         std::vector<std::string> result_string_parts =
@@ -42,9 +42,12 @@ namespace userdata {
                 fplus::fwd::reverse()
             );
         selected_icon = " " + selected_icon;
-        result_string_parts.insert(result_string_parts.cbegin(), selected_icon);
-        result_string_parts.back().append(" ");
-        return result_string_parts;
+        if (!result_string_parts.empty()) {
+            result_string_parts.back().append(" ");
+        } else {
+            selected_icon.append(" ");
+        }
+        return {selected_icon, result_string_parts};
     }
     
     std::tuple<std::string, std::string, saker::BgColor> get_user_icon_name_and_bg() {
