@@ -18,9 +18,14 @@ namespace saker {
     
     using namespace rang;
     
+    template<typename T>
+    using fitting_function = std::function<std::pair<std::string, T>(const std::string&, T)>;
+    
     class Zone_ {
         private:
             // helpers
+            fitting_function<std::string> transform_func_str;
+            fitting_function<std::vector<std::string>> transform_func_vec_str;
             bool show_icon_first{true};
             bool to_be_shown{true};
             unsigned int order{};
@@ -90,24 +95,41 @@ namespace saker {
                 return *this;
             }
             
-            Zone_& preRenderContent() {
-                return *this;
-            }
-            
             unsigned int size() const {
                 return this->content.size() + this->end.size();
             }
-        
+            
             unsigned int getPriority() const {
                 return this->priority;
             }
-        
+            
             unsigned int getOrder() const {
                 return this->order;
             }
-        
+            
             bool isToBeShown() const {
                 return this->to_be_shown;
+            }
+            
+            void transformWithFunc() {
+                if (this->content.actual_content.index() == 0) { // string
+                    if (!static_cast<bool>(this->transform_func_str)) { return; }
+                    const std::string str_content = std::get<0>(this->content.actual_content);
+                    const auto func = this->transform_func_str;
+                    const auto[new_icon_str, new_content_str] = transform_func_str(this->icon.actual_icon, str_content);
+                    this->icon.actual_icon = new_icon_str;
+                    this->content.actual_content = new_content_str;
+                } else if (static_cast<bool>(this->transform_func_vec_str)) {
+                    const std::vector<std::string> vec_content = std::get<1>(this->content.actual_content);
+                    const auto func = this->transform_func_vec_str;
+                    const auto[new_icon_str, new_content_str] = transform_func_vec_str(
+                        this->icon.actual_icon, vec_content
+                    );
+                    this->icon.actual_icon = new_icon_str;
+                    this->content.actual_content = new_content_str;
+                } else {
+                    return;
+                }
             }
     };
     
@@ -175,7 +197,15 @@ namespace saker {
                 return *this;
             }
         
-            // TODO: add partial_content_if_cant_fit *still thinking about name* to show partially if space is not enough
+            Zone& transformToFit(fitting_function<const std::vector<std::string>&> transform_func) {
+                this->inner.transform_func_vec_str = transform_func;
+                return *this;
+            }
+        
+            Zone& transformToFit(fitting_function<const std::string&> transform_func) {
+                this->inner.transform_func_str = transform_func;
+                return *this;
+            }
     
     };
     

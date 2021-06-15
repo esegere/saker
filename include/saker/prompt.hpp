@@ -35,10 +35,38 @@ namespace saker {
     class Prompt {
         private:
             Prompt_ inner;
-            
-            void renderZones() {
+        
+            bool tryToReduceUntilFits(Zone_& zone_to_fit, int available_space) {
+                int prev_size = zone_to_fit.size();
+                int new_size;
+                do {
+                    zone_to_fit.transformWithFunc();
+                    new_size = zone_to_fit.size();
+                    if (prev_size == new_size) {
+                        return false;
+                    }
+                    prev_size = new_size;
+                } while (new_size > available_space);
+                return true;
+            }
+        
+            auto findLastFittingContent() -> decltype(this->inner.zones.begin()) {
                 const auto[cols, _] = env::getTermSize();
                 const unsigned int max_usable_cols = (cols * this->inner.max_size / 100);
+                int used_cols = 0;
+                for (auto zone_iter = this->inner.zones.begin(); zone_iter != this->inner.zones.end(); zone_iter++) {
+                    if (int cols_to_use = used_cols + (*zone_iter).size(); max_usable_cols < cols_to_use) {
+                        const bool did_reduce = tryToReduceUntilFits(*zone_iter, max_usable_cols - used_cols);
+                        if (!did_reduce) {
+                            return zone_iter;
+                        }
+                    }
+                    used_cols += zone_iter->size();
+                }
+                return this->inner.zones.end();
+            }
+        
+            void renderZones() {
                 std::stable_sort( // sort by priority
                     this->inner.zones.begin(),
                     this->inner.zones.end(),
@@ -46,16 +74,8 @@ namespace saker {
                         return z2.getPriority() < z1.getPriority();
                     }
                 );
-                unsigned int current_size{};
-                this->inner.zones.erase( // erase things that wouldn't fit
-                    std::remove_if(
-                        this->inner.zones.begin(),
-                        this->inner.zones.end(),
-                        [&current_size, &max_usable_cols](const Zone_& z) {
-                            current_size += z.size();
-                            return current_size > max_usable_cols;
-                        }
-                    ),
+                this->inner.zones.erase(
+                    this->findLastFittingContent(),
                     this->inner.zones.end()
                 );
                 std::stable_sort( // re-sort by natural order

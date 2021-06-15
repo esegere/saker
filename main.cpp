@@ -42,30 +42,32 @@ int main(int argc, const char* argv[]) {
                    .showIf(prev_error_code > 0),
     
                   saker::Zone{ // host
-            
+    
                       saker::Icon{
                           hosticon
                       },
-            
+    
                       saker::Content{
                           hostname
                       }
-            
+    
                   }.bg(saker::Bg::green)
                    .priority(2)
+                   .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
     
                   saker::Zone{ // user
-        
+    
                       saker::Icon{
                           usericon
                       },
-        
+    
                       saker::Content{
                           username
                       }
-        
+    
                   }.bg(userbg)
+                   .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
     
                   saker::Zone{ // directory
@@ -73,22 +75,21 @@ int main(int argc, const char* argv[]) {
                       saker::Icon{
                           diricon
                       },
-        
+
                       saker::Content{
                           dirparts
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
-        
+    
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .priority(10)
+                   .transformToFit(saker::transforming::drop_first_vec)
                    .endWith("\ue0b0"),
-        
-        
+    
+    
               }.fg(saker::Fg::black)
                .endWith(" ")
                .maxSize(50)
-               .show()
-    
-              << '\n';
+               .show();
 }
