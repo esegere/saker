@@ -5,13 +5,13 @@
 
 ### Motivation
 
-The motivation behind this was my love for the terminal, and those fancy looking prompts, yet i didn't want to bother writing those prompts inside my  
+The motivation behind this was my love for the terminal, and those fancy looking prompts, yet i didn't want to bother writing those prompts inside my
 .bashrc, they are really annoying to write and modify, i also wanted some dynamic behaviour regarding the size of the prompt, so it doesn't feel out of
 place in smaller terminals or multiplexer panes.
 
 ### Why C++?
 
-Could've as well been written in any other language, but i didn't want it to be slow despite it having to retrieve lots of information, and I enjoy  
+Could've as well been written in any other language, but i didn't want it to be slow despite it having to retrieve lots of information, and I enjoy
 programming in C++.
 
 
@@ -19,8 +19,7 @@ programming in C++.
 
 ### Prerequisites
 
-in case you want int to look just as mine please install  
-[FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)
+in case you want int to look just as mine please install [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)
 it is not strictly necessary as you can customize the behaviour, but i purposely made the content accept vectors with that in mind, give it a try.
 
 ```sh
