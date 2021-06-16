@@ -91,5 +91,7 @@ int main(int argc, const char* argv[]) {
               }.fg(saker::Fg::black)
                .endWith(" ")
                .maxSize(50)
-               .show();
+               .show()
+
+              << '\n';
 }

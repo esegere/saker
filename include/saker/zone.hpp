@@ -40,13 +40,31 @@ namespace saker {
             Content content;
             Icon icon{};
             std::string end{};
-            
+        
             Zone_(const Content& content) : content(content) {}
-            
+        
             friend class Zone;
         
+            inline void applyStrTransform() {
+                const std::string str_content = std::get<0>(this->content.actual_content);
+                const auto func = this->transform_func_str;
+                const auto[new_icon_str, new_content_str] = transform_func_str(this->icon.actual_icon, str_content);
+                this->icon.actual_icon = new_icon_str;
+                this->content.actual_content = new_content_str;
+            }
+        
+            inline void applyVecTransform() {
+                const std::vector<std::string> vec_content = std::get<1>(this->content.actual_content);
+                const auto func = this->transform_func_vec_str;
+                const auto[new_icon_str, new_content_str] = transform_func_vec_str(
+                    this->icon.actual_icon, vec_content
+                );
+                this->icon.actual_icon = new_icon_str;
+                this->content.actual_content = new_content_str;
+            }
+    
         public:
-            
+        
             Zone_& setIfNotStyle(Style zone_style) {
                 if (static_cast<int>(zone_style) == 0) {
                     this->zone_style = zone_style;
@@ -114,21 +132,9 @@ namespace saker {
             void transformWithFunc() {
                 if (this->content.actual_content.index() == 0) { // string
                     if (!static_cast<bool>(this->transform_func_str)) { return; }
-                    const std::string str_content = std::get<0>(this->content.actual_content);
-                    const auto func = this->transform_func_str;
-                    const auto[new_icon_str, new_content_str] = transform_func_str(this->icon.actual_icon, str_content);
-                    this->icon.actual_icon = new_icon_str;
-                    this->content.actual_content = new_content_str;
+                    this->applyStrTransform();
                 } else if (static_cast<bool>(this->transform_func_vec_str)) {
-                    const std::vector<std::string> vec_content = std::get<1>(this->content.actual_content);
-                    const auto func = this->transform_func_vec_str;
-                    const auto[new_icon_str, new_content_str] = transform_func_vec_str(
-                        this->icon.actual_icon, vec_content
-                    );
-                    this->icon.actual_icon = new_icon_str;
-                    this->content.actual_content = new_content_str;
-                } else {
-                    return;
+                    this->applyVecTransform();
                 }
             }
     };

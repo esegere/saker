@@ -2,7 +2,7 @@ add_library(saker saker.hpp saker/zone.hpp saker/prompt.hpp saker/content.hpp sa
 
 add_library(rang rang.hpp)
 
-add_library(environment environment.hpp)
+add_library(environment environment.hpp saker/transforming.hpp saker/vert.hpp)
 
 target_link_libraries(saker rang environment)
 
