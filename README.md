@@ -19,8 +19,8 @@ programming in C++.
 
 ### Prerequisites
 
-in case you want int to look just as mine please install [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)
-it is not strictly necessary as you can customize the behaviour, but i purposely made the content accept vectors with that in mind, give it a try.
+in case you want it to look just as mine please install [FunctionalPlus](https://github.com/Dobiasd/FunctionalPlus)
+it is not strictly necessary as you can customize the behaviour, but i purposely made the content accept vectors with that library in mind, give it a try.
 
 ```sh
 git clone https://github.com/esegere/saker 
@@ -39,7 +39,7 @@ export $PS1='`saker-prompt -l=\# -e="$?"`'
 ```
 to your **.bashrc** file
 
-Customization settings go under the userdata.hpp file, there you can define your extra functionality, if any parameter is needed prom the commad
+Customization settings go under the **userdata.hpp file**, there you can define your extra functionality, if any parameter is needed prom the commad
 line you can use the **argh::parser**  to retrieve those values and modify your **.bashrc** accordingly
 
 general behaviour and structure can be modified in **main.cpp** youre free to experiment, just avoid touching files inside **include** for your own sanity
