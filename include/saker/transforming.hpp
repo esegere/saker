@@ -28,7 +28,9 @@ namespace saker {
         std::pair<std::string, std::vector<std::string>>
         drop_first_vec(const std::string& icon_str, const std::vector<std::string> content_vec) {
             if (content_vec.size() < 2) {
-                return {icon_str, {}};
+                auto new_icon = icon_str;
+                new_icon.append(" ");
+                return {new_icon, {}};
             }
             std::vector<std::string> new_vec = content_vec;
             new_vec.erase(new_vec.cbegin());

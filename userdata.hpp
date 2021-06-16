@@ -18,7 +18,7 @@ namespace userdata {
         // modify only this parameters
     
         constexpr const char* DEFAULT_ICON = "\uf023";
-        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 2;
+        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 3;
         const std::map<std::string, std::string> ICONS = icons::special_dirs();
         // creation
     

@@ -203,7 +203,7 @@ namespace saker {
                 return *this;
             }
         
-            Zone& transformToFit(fitting_function<const std::vector<std::string>&> transform_func) {
+            Zone& transformToFit(fitting_function<std::vector<std::string>> transform_func) {
                 this->inner.transform_func_vec_str = transform_func;
                 return *this;
             }

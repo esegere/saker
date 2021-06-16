@@ -5,7 +5,7 @@
 
 int main(int argc, const char* argv[]) {
     
-    const auto cli = argh::parser(argv, argh::parser::Mode::PREFER_PARAM_FOR_UNREG_OPTION);
+    const auto cli = argh::parser(argv);
     
     // presets
     const auto[hosticon, hostname] = userdata::get_host_icon_and_name();
