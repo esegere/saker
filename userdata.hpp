@@ -18,7 +18,7 @@ namespace userdata {
         // modify only this parameters
     
         constexpr const char* DEFAULT_ICON = "\uf023";
-        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 3;
+        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 2;
         const std::map<std::string, std::string> ICONS = icons::special_dirs();
         // creation
     
@@ -54,7 +54,7 @@ namespace userdata {
         std::string user = getenv("USER");
         std::string user_icon;
         saker::BgColor bg = saker::Bg::cyan;
-        if (user == "esege") {
+        if (user == getlogin()) {
             user_icon = " \uF007 ";
         } else if (user == "root") {
             user_icon = " \uF21B ";
