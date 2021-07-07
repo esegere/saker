@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <climits>
 #include "saker.hpp"
+#include <git2.h>
 
 namespace userdata {
     
@@ -81,6 +82,33 @@ namespace userdata {
         }
         return {hosticon, hostname};
     }
+    
+    std::pair<std::string, std::string> get_git_branch() {
+        const auto fail = []() {
+            git_libgit2_shutdown();
+            return std::make_pair("", "");
+        };
+        git_libgit2_init();
+        git_repository* repo;
+        git_reference* head;
+        int error;
+        std::string path = get_current_dir_name();
+        std::string repo_parent;
+        
+        while (!path.empty() && error != 0) {
+            error = git_repository_open(&repo, path.c_str());
+            auto last = path.find_last_of("/");
+            repo_parent = path.substr(last + 1, path.size()); // +1 to skip "/"
+            path = path.substr(0, last);
+        }
+        if (error != 0) return fail();
+        error = git_repository_head(&head, repo);
+        if (error != 0) return fail();
+        std::string branch_name = git_reference_shorthand(head);
+        git_libgit2_shutdown();
+        return {branch_name + " ", repo_parent + " "};
+    }
+    
     
 }
 

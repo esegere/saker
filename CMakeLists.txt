@@ -10,7 +10,7 @@ add_executable(saker-prompt main.cpp userdata.hpp icons.hpp argh.hpp)
 add_subdirectory(include)
 include_directories(include)
 
-target_link_libraries(saker-prompt saker FunctionalPlus::fplus)
+target_link_libraries(saker-prompt saker FunctionalPlus::fplus git2)
 
 install(
         TARGETS saker-prompt
