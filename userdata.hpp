@@ -14,15 +14,24 @@
 
 namespace userdata {
     
+    struct GitStatusCounts {
+            int total = 0;
+            int new_ = 0;
+            int modified = 0;
+            int deleted = 0;
+            int renamed = 0;
+            int type_change = 0;
+            int with_errors = 0;
+    };
     
     auto get_directory_icon_and_parts() -> std::pair<std::string, std::vector<std::string>> {
         // modify only this parameters
-    
+        
         constexpr const char* DEFAULT_ICON = "\uf023";
         constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 2;
         const std::map<std::string, std::string> ICONS = icons::special_dirs();
         // creation
-    
+        
         const std::string path = get_current_dir_name();
         std::string selected_icon{DEFAULT_ICON};
         std::vector<std::string> result_string_parts =
@@ -83,10 +92,57 @@ namespace userdata {
         return {hosticon, hostname};
     }
     
-    auto get_git_branch() -> std::pair<std::string, std::string> {
+    auto get_status_values(git_repository* repo) -> GitStatusCounts {
+        git_status_list* status;
+        git_status_options statusopt = {GIT_STATUS_OPTIONS_INIT};
+        
+        statusopt.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR;
+        statusopt.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED |
+                          GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX |
+                          GIT_STATUS_OPT_SORT_CASE_SENSITIVELY;
+        int ret = git_status_list_new(&status, repo, &statusopt);
+        if (ret != 0) {
+            return {};
+        }
+        size_t maxi = git_status_list_entrycount(status);
+        const git_status_entry* s;
+        GitStatusCounts gs;
+        for (size_t i = 0; i < maxi; ++i) {
+            
+            s = git_status_byindex(status, i);
+            
+            if ((s->status & (GIT_STATUS_INDEX_NEW | GIT_STATUS_WT_NEW)) != 0) {
+                gs.new_++;
+                gs.total++;
+            }
+            if ((s->status & (GIT_STATUS_INDEX_MODIFIED | GIT_STATUS_WT_MODIFIED)) != 0) {
+                gs.modified++;
+                gs.total++;
+            }
+            if ((s->status & (GIT_STATUS_INDEX_DELETED | GIT_STATUS_WT_DELETED)) != 0) {
+                gs.deleted++;
+                gs.total++;
+            }
+            if ((s->status & (GIT_STATUS_INDEX_RENAMED | GIT_STATUS_WT_RENAMED)) != 0) {
+                gs.renamed++;
+                gs.total++;
+            }
+            if ((s->status & (GIT_STATUS_INDEX_TYPECHANGE | GIT_STATUS_WT_TYPECHANGE)) != 0) {
+                gs.type_change++;
+                gs.total++;
+            }
+            if ((s->status & (GIT_STATUS_WT_UNREADABLE | GIT_STATUS_CONFLICTED)) != 0) {
+                gs.with_errors++;
+                gs.total++;
+            }
+        }
+        return gs;
+    }
+    
+    auto get_git_branch_parent_repo_and_status() -> std::tuple<std::string, std::string, GitStatusCounts> {
         const auto fail = []() {
             git_libgit2_shutdown();
-            return std::make_pair("", "");
+            return std::make_tuple("", "", GitStatusCounts{});
         };
         git_libgit2_init();
         git_repository* repo;
@@ -105,10 +161,10 @@ namespace userdata {
         error = git_repository_head(&head, repo);
         if (error != 0) return fail();
         std::string branch_name = git_reference_shorthand(head);
+        GitStatusCounts gs = get_status_values(repo);
         git_libgit2_shutdown();
-        return {branch_name + " ", repo_parent + " "};
+        return {branch_name + " ", repo_parent + " ", gs};
     }
-    
     
 }
 
