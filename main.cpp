@@ -20,7 +20,7 @@ int main(int argc, const char* argv[]) {
     if (!git_branch.empty()) {
         const auto last_to_erase = std::find_if(
             dirparts.cbegin(), dirparts.cend(),
-            [git_repo_dir](const auto elem) {
+            [&git_repo_dir](const auto elem) {
                 return git_repo_dir.find(elem) != std::string::npos;
             }
         );
@@ -37,7 +37,7 @@ int main(int argc, const char* argv[]) {
     
     std::cout <<
               saker::Prompt{
-        
+    
                   saker::Zone{ // line number
                       std::to_string(line_number)
                   }.bg(saker::Bg::black)
@@ -46,7 +46,7 @@ int main(int argc, const char* argv[]) {
                    .endWith("\ue0b4")
                    .priority(3)
                    .showIf(line_number > 0),
-        
+    
                   saker::Zone{ // error code of previous comand
             
                       saker::Icon{
@@ -59,7 +59,7 @@ int main(int argc, const char* argv[]) {
                    .priority(4)
                    .endWith("\ue0b4")
                    .showIf(prev_error_code > 0),
-        
+    
                   saker::Zone{ // host
             
                       saker::Icon{
@@ -74,7 +74,7 @@ int main(int argc, const char* argv[]) {
                    .priority(2)
                    .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
-        
+    
                   saker::Zone{ // user
             
                       saker::Icon{
@@ -88,50 +88,52 @@ int main(int argc, const char* argv[]) {
                   }.bg(userbg)
                    .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
-        
-        
+    
+    
                   saker::Zone{ // directory
             
                       saker::Icon{
                           diricon
                       },
-            
+
                       saker::Content{
                           git_branch.empty() ? dirparts : std::vector{git_repo_dir}
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
-            
+        
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
-                   .priority(10)
+                   .priority(8)
                    .transformToFit(saker::transforming::drop_first_vec)
                    .endWith(git_branch.empty() ? "\ue0b0" : "\ue0c6"),
-        
+    
                   saker::Zone{ //git branch
-            
+        
                       saker::Icon{
                           " \uf418 "
                       },
-            
+        
                       saker::Content{
                           git_branch
                       }
-            
+        
                   }.bg(saker::Bg::magenta)
                    .priority(9)
+                   .transformToFit(saker::transforming::drop_icon<std::string>)
                    .showIf(!git_branch.empty())
                    .endWith("\ue0b0"),
-        
+    
                   saker::Zone{ // repo subdir
-            
+        
                       saker::Content{
                           dirparts
                       }.separatedBy(" \uE0B1 ", false)
                        .separatorFg(saker::Fg::black)
-            
+        
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .priority(10)
+                   .transformToFit(saker::transforming::drop_first_vec)
                    .showIf(!git_branch.empty() && !dirparts.empty())
                    .endWith("\ue0b0"),
         
