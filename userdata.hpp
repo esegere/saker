@@ -15,7 +15,7 @@
 namespace userdata {
     
     
-    std::pair<std::string, std::vector<std::string>> get_directory_icon_and_parts() {
+    auto get_directory_icon_and_parts() -> std::pair<std::string, std::vector<std::string>> {
         // modify only this parameters
     
         constexpr const char* DEFAULT_ICON = "\uf023";
@@ -51,14 +51,14 @@ namespace userdata {
         return {selected_icon, result_string_parts};
     }
     
-    std::tuple<std::string, std::string, saker::BgColor> get_user_icon_name_and_bg() {
+    auto get_user_icon_name_and_bg() -> std::tuple<std::string, std::string, saker::BgColor> {
         std::string user = getenv("USER");
         std::string user_icon;
         saker::BgColor bg = saker::Bg::cyan;
         if (user == getlogin()) {
             user_icon = " \uF007 ";
         } else if (user == "root") {
-            user_icon = " \uF21B ";
+            user_icon = " \uF2dd ";
             bg = saker::Bg::blue;
         } else {
             user_icon = " \uF0C0 ";
@@ -67,7 +67,7 @@ namespace userdata {
         return {user_icon, user, bg};
     }
     
-    std::pair<std::string, std::string> get_host_icon_and_name() {
+    auto get_host_icon_and_name() -> std::pair<std::string, std::string> {
         std::string hostname;
         char hn_char[HOST_NAME_MAX];
         gethostname(hn_char, HOST_NAME_MAX);
@@ -83,7 +83,7 @@ namespace userdata {
         return {hosticon, hostname};
     }
     
-    std::pair<std::string, std::string> get_git_branch() {
+    auto get_git_branch() -> std::pair<std::string, std::string> {
         const auto fail = []() {
             git_libgit2_shutdown();
             return std::make_pair("", "");
