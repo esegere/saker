@@ -11,7 +11,7 @@ int main(int argc, const char* argv[]) {
     const auto[hosticon, hostname] = userdata::get_host_icon_and_name();
     const auto[usericon, username, userbg] = userdata::get_user_icon_name_and_bg();
     auto[diricon, dirparts] = userdata::get_directory_icon_and_parts();
-    const auto[git_branch, git_repo_dir, git_status_counts] = userdata::get_git_branch_parent_repo_and_status();
+    auto[git_branch, git_repo_dir, git_status_counts] = userdata::get_git_branch_parent_repo_and_status();
     int line_number;
     cli("l", "0") >> line_number;
     int prev_error_code;
@@ -32,13 +32,18 @@ int main(int argc, const char* argv[]) {
         }
         if (!dirparts.empty()) {
             dirparts.front().insert(0, " ");
+        } else if (git_status_counts.total > 0) {
+            dirparts.emplace_back("");
         }
     }
     
     
+    rang::BgColor git_zones_bg = saker::Bg::magenta;
+    rang::BgColor git_statuses_bg = saker::Bg::black;
+    
     std::cout <<
               saker::Prompt{
-    
+        
                   saker::Zone{ // line number
                       std::to_string(line_number)
                   }.bg(saker::Bg::black)
@@ -47,7 +52,7 @@ int main(int argc, const char* argv[]) {
                    .endWith("\ue0b4")
                    .priority(3)
                    .showIf(line_number > 0),
-    
+        
                   saker::Zone{ // error code of previous comand
             
                       saker::Icon{
@@ -60,7 +65,7 @@ int main(int argc, const char* argv[]) {
                    .priority(4)
                    .endWith("\ue0b4")
                    .showIf(prev_error_code > 0),
-    
+        
                   saker::Zone{ // host
             
                       saker::Icon{
@@ -75,7 +80,7 @@ int main(int argc, const char* argv[]) {
                    .priority(2)
                    .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
-    
+        
                   saker::Zone{ // user
             
                       saker::Icon{
@@ -89,8 +94,8 @@ int main(int argc, const char* argv[]) {
                   }.bg(userbg)
                    .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
-    
-    
+        
+        
                   saker::Zone{ // directory
             
                       saker::Icon{
@@ -101,113 +106,115 @@ int main(int argc, const char* argv[]) {
                           git_branch.empty() ? dirparts : std::vector{git_repo_dir}
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
-        
+            
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .priority(7)
                    .transformToFit(saker::transforming::drop_first_vec)
                    .endWith(git_branch.empty() ? "\ue0b0" : "\ue0c6"),
-    
-    
-                  saker::Zone{ //git branch
         
+        
+                  saker::Zone{ // git branch
+            
                       saker::Icon{
                           " \uf418 "
                       },
-        
+            
                       saker::Content{
                           git_branch
                       }
-        
-                  }.bg(saker::Bg::magenta)
+            
+                  }.bg(git_zones_bg)
+                   .fg(saker::Fg::black)
                    .priority(9)
+                   .endWith(git_status_counts.total > 0 ? "\ue0c6 " : "")
                    .transformToFit(saker::transforming::drop_icon<std::string>)
                    .showIf(!git_branch.empty()),
-    
-    
-                  saker::Zone{ // git modified
         
+        
+                  saker::Zone{ // git modified
+            
                       saker::Content{
                           "\uf12a"
-                      }.fg(saker::Fg::black)
-        
-                  }.bg(saker::Bg::magenta)
+                      }.fg(saker::FgB::blue)
+            
+                  }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.modified > 0),
-    
-    
-                  saker::Zone{ // git new
         
+        
+                  saker::Zone{ // git new
+            
                       saker::Content{
                           "\uf067 "
-                      }.fg(saker::Fg::black)
-        
-                  }.bg(saker::Bg::magenta)
+                      }.fg(saker::FgB::green)
+            
+                  }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.new_ > 0),
-    
-    
-                  saker::Zone{ // git deleted
         
+        
+                  saker::Zone{ // git deleted
+            
                       saker::Content{
                           "\uf068 "
-                      }.fg(saker::Fg::black)
-        
-                  }.bg(saker::Bg::magenta)
+                      }.fg(saker::FgB::red)
+            
+                  }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.deleted > 0),
-    
-    
-                  saker::Zone{ // git renamed
         
+        
+                  saker::Zone{ // git renamed
+            
                       saker::Content{
                           "\uf064 "
-                      }.fg(saker::Fg::black)
-        
-                  }.bg(saker::Bg::magenta)
+                      }.fg(saker::FgB::yellow)
+            
+                  }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.renamed > 0),
-    
-    
-                  saker::Zone{ // git type change
         
+        
+                  saker::Zone{ // git type change
+            
                       saker::Content{
                           "\uf128 "
-                      }.fg(saker::Fg::black)
-        
-                  }.bg(saker::Bg::magenta)
+                      }.fg(saker::FgB::yellow)
+            
+                  }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.type_change > 0),
-    
-    
-                  saker::Zone{ // git error
         
+        
+                  saker::Zone{ // git error
+            
                       saker::Content{
                           "\uf73a "
                       }.fg(saker::FgB::gray)
-        
-                  }.bg(saker::Bg::magenta)
+            
+                  }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.with_errors > 0),
-    
-    
+        
+        
                   saker::Zone{ // --finish-- git info
-        
+            
                       ""
-        
-                  }.bg(saker::Bg::magenta)
+            
+                  }.bg(git_status_counts.total > 0 ? git_statuses_bg : git_zones_bg)
                    .priority(9)
                    .showIf(!git_repo_dir.empty())
                    .endWith("\ue0b0"),
-    
-    
-                  saker::Zone{ // repo subdir
         
+        
+                  saker::Zone{ // repo subdir
+            
                       saker::Content{
                           dirparts
                       }.separatedBy(" \uE0B1 ", false)
                        .separatorFg(saker::Fg::black)
-        
+            
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .priority(10)
@@ -217,7 +224,7 @@ int main(int argc, const char* argv[]) {
         
               }.fg(saker::Fg::black)
                .endWith(" ")
-               .maxSize(50)
+               .maxSize(60)
                .show();
 }
     
