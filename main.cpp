@@ -161,7 +161,7 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git new
             
                       saker::Content{
-                          "\uf916 "
+                          "\uf916"
                       }.fg(saker::FgB::green)
             
                   }.bg(git_statuses_bg)
