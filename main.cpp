@@ -18,6 +18,10 @@ int main(int argc, const char* argv[]) {
     cli("e", "0") >> prev_error_code;
     int jobs_managed;
     cli("j", "0") >> jobs_managed;
+    std::string extra_info;
+    cli("xc", "") >> extra_info;
+    std::string extra_icon;
+    cli("xi", "") >> extra_icon;
     
     if (!git_branch.empty()) {
         const auto last_to_erase = std::find_if(
@@ -101,22 +105,39 @@ int main(int argc, const char* argv[]) {
                       saker::Icon{
                           usericon
                       },
-            
+
                       saker::Content{
                           username
                       }
-            
+        
                   }.bg(userbg)
                    .transformToFit(saker::transforming::drop_content<std::string>)
                    .endWith("\ue0b4"),
     
     
+                  saker::Zone{ // extra info
+        
+                      saker::Icon{
+                          " " + extra_icon + " "
+                      },
+        
+                      saker::Content{
+                          extra_info
+                      }
+        
+                  }.bg(saker::Bg::yellow)
+                   .showIf(!extra_info.empty() && !extra_icon.empty())
+                   .transformToFit(saker::transforming::drop_content<std::string>)
+                   .priority(4)
+                   .endWith("\ue0b4"),
+    
+    
                   saker::Zone{ // directory
-            
+        
                       saker::Icon{
                           diricon
                       },
-
+        
                       saker::Content{
                           git_branch.empty() ? dirparts : std::vector{git_repo_dir}
                       }.separatedBy(" \uE0B1 ", true)
