@@ -1,3 +1,5 @@
+![SAKER_1](SAKER.png)
+
 # Welcome to saker 👋
 [![License: Unlicense](https://img.shields.io/badge/License-Unlicense-yellow.svg)](#)
 
@@ -35,7 +37,22 @@ sudo make install
 
 add
 ```sh
-export $PS1='`saker-prompt -l=\# -e="$?"`'
+# virtualenv info
+function virtualenv_info() {
+    # Get Virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        echo "${VIRTUAL_ENV}" | choose -f / -1 | choose -f "-" 0 
+    else
+        # In case you don't have one activated
+        echo ''
+    fi
+}
+
+# disable the default virtualenv prompt change
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+export $PS1='`saker-prompt -l=\# -e="$?" -j=\j -xc=$(virtualenv_info) -xi=""``'
 ```
 to your **.bashrc** file
 
