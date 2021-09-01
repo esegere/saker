@@ -35,6 +35,7 @@ namespace icons {
             {"Java",               "\ue256"},
             {"Javascript",         "\uf81d"},
             {"Julia",              "\ue624"},
+            {"Nim",                "\ue26e"},
             {"PHP",                "\uf81e"},
             {"Python",             "\ue606"},
             {"Ruby",               "\ue791"},
