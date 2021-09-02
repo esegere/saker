@@ -42,7 +42,7 @@ function virtualenv_info() {
     # Get Virtual Env
     if [[ -n "$VIRTUAL_ENV" ]]; then
         # Strip out the path and just leave the env name
-        echo "${VIRTUAL_ENV}" | choose -f / -1 | choose -f "-" 0 
+        echo "${VIRTUAL_ENV}" | awk -F / '{print $(NF)}'
     else
         # In case you don't have one activated
         echo ''
