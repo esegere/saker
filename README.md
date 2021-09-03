@@ -104,8 +104,8 @@ general behaviour and structure can be modified in **main.cpp** youre free to ex
 
 👤 **Cesar Pérez** - designer of saker cool logo
 
-* Behance: [csr-dg](https://www.behance.net/csr-dg)
-* Instagram: [csr_dg](https://www.instagram.com/csr_dg)
+* Behance: [@csr-dg](https://www.behance.net/csr-dg)
+* Instagram: [@csr_dg](https://www.instagram.com/csr_dg)
 
 ## Show your support
 
