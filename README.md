@@ -1,4 +1,4 @@
-![SAKER_1](SAKER.png)
+![SAKER_1](img/SAKER.png)
 
 # Welcome to saker 👋
 
@@ -19,31 +19,31 @@ programming in C++.
 
 ## It adapts to your terminal size
 
-![Screenshot_20210902_151617.png](Screenshot_20210902_151617.png)
+![Screenshot_20210902_151617.png](img/Screenshot_20210902_151617.png)
 
 ## Identify other users without loosing style
 
-![Screenshot_20210902_151704.png](Screenshot_20210902_151704.png)
+![Screenshot_20210902_151704.png](img/Screenshot_20210902_151704.png)
 
 ## Assign icons to directories
 
-![Screenshot_20210902_151820.png](Screenshot_20210902_151820.png)
+![Screenshot_20210902_151820.png](img/Screenshot_20210902_151820.png)
 
 ## Git branch on project directory
 
-![Screenshot_20210902_151746.png](Screenshot_20210902_151746.png)
+![Screenshot_20210902_151746.png](img/Screenshot_20210902_151746.png)
 
 ## Git status indicators
 
-![Screenshot_20210902_152021.png](Screenshot_20210902_152021.png)
+![Screenshot_20210902_152021.png](img/Screenshot_20210902_152021.png)
 
 ## Virtual environment info
 
-![Screenshot_20210902_152130.png](Screenshot_20210902_152130.png)
+![Screenshot_20210902_152130.png](img/Screenshot_20210902_152130.png)
 
 ## Get background tasks and error codes
 
-![Screenshot_20210902_152324.png](Screenshot_20210902_152324.png)
+![Screenshot_20210902_152324.png](img/Screenshot_20210902_152324.png)
 
 
 
@@ -85,7 +85,7 @@ function virtualenv_info() {
 # disable the default virtualenv prompt change
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-export $PS1='`saker-prompt -l=\# -e="$?" -j=\j -xc=$(virtualenv_info) -xi=""``'
+export $PS1='`saker-prompt -l=\# -e="$?" -j=\j -xc=$(virtualenv_info) -xi=""`'
 ```
 
 to your **.bashrc** file
