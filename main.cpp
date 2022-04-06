@@ -87,12 +87,13 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // jobs running in the background
         
                       saker::Icon{
-                          " \uF740"
+                          " \uf56e "
                       },
         
                       std::to_string(jobs_managed)
         
-                  }.bg(saker::Bg::gray)
+                  }.bg(saker::Bg::blue)
+                   .fg(saker::FgB::gray)
                    .priority(4)
                    .endWith("\ue0b4")
                    .showIf(jobs_managed > 0),
