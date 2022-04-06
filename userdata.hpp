@@ -11,6 +11,9 @@
 #include <climits>
 #include "saker.hpp"
 #include <git2.h>
+#include <netdb.h>  // MAC os only, todo: add to a conditional include
+#define HOST_NAME_MAX _POSIX_HOST_NAME_MAX
+#include <filesystem>
 
 namespace userdata {
     
@@ -24,15 +27,19 @@ namespace userdata {
             int with_errors = 0;
     };
     
-    auto get_directory_icon_and_parts() -> std::pair<std::string, std::vector<std::string>> {
+    auto get_directory_icon_and_parts(const std::string& git_repo = "") -> std::tuple<std::string, std::vector<std::string>, int, int> {
+        namespace fs = std::filesystem;
         // modify only this parameters
         
         constexpr const char* DEFAULT_ICON = "\uf023";
-        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 2;
+        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 4;
         const std::map<std::string, std::string> ICONS = icons::special_dirs();
         // creation
         
-        const std::string path = get_current_dir_name();
+        const std::string path = fs::current_path();
+        int subdirs = 0;
+        int repo_subdirs = 0;
+        bool repo_dir_found = false;
         std::string selected_icon{DEFAULT_ICON};
         std::vector<std::string> result_string_parts =
             fplus::fwd::apply(
@@ -48,24 +55,44 @@ namespace userdata {
                         return true;
                     }
                 ),
+                fplus::fwd::transform(
+                        [&subdirs, &git_repo, &repo_dir_found, &repo_subdirs](auto elem){
+                            if(!repo_dir_found && git_repo.substr(0,git_repo.size() - 1) != elem) {
+                                repo_subdirs ++;
+                            } else {
+                                repo_dir_found = true;
+                            }
+                            subdirs ++;
+                            return elem;
+                        }
+                        ),
                 fplus::fwd::take(NUMBER_OF_RELEVANT_SUBDIRS),
                 fplus::fwd::reverse()
             );
+        repo_subdirs -= NUMBER_OF_RELEVANT_SUBDIRS;
+        if (!repo_dir_found || repo_subdirs < 0){
+            repo_subdirs = 0;
+        }
+        const int skipped_subdirs = subdirs - (repo_dir_found ? repo_subdirs + 1 + NUMBER_OF_RELEVANT_SUBDIRS : result_string_parts.size());
         selected_icon = " " + selected_icon;
         if (!result_string_parts.empty()) {
             result_string_parts.back().append(" ");
         } else {
             selected_icon.append(" ");
         }
-        return {selected_icon, result_string_parts};
+        if (!result_string_parts.empty() && skipped_subdirs > 0){
+            selected_icon.append(" ");
+        }
+        return {selected_icon, result_string_parts, skipped_subdirs, repo_subdirs};
     }
     
     auto get_user_icon_name_and_bg() -> std::tuple<std::string, std::string, saker::BgColor> {
         std::string user = getenv("USER");
         std::string user_icon;
         saker::BgColor bg = saker::Bg::cyan;
-        if (user == getlogin()) {
+        if (user == "sergioomargarciarodriguez") {
             user_icon = " \uF007 ";
+            user = "sergio...";
         } else if (user == "root") {
             user_icon = " \uF2dd ";
             bg = saker::Bg::blue;
@@ -82,10 +109,9 @@ namespace userdata {
         gethostname(hn_char, HOST_NAME_MAX);
         hostname = hn_char;
         std::string hosticon{};
-        if (hostname == "dellneon") {
-            hosticon = " \uF31B ";
-        } else if (hostname == "dellsuse") {
-            hosticon = " \uF314 ";
+        if (hostname == "Sergios-MacBook-Pro.local") {
+            hostname = "MacBook-Pro";
+            hosticon = " \uf179 ";
         } else {
             hosticon = " \uE712 ";
         }
@@ -140,6 +166,7 @@ namespace userdata {
     }
     
     auto get_git_branch_parent_repo_and_status() -> std::tuple<std::string, std::string, GitStatusCounts> {
+        namespace fs = std::filesystem;
         const auto fail = []() {
             git_libgit2_shutdown();
             return std::make_tuple("", "", GitStatusCounts{});
@@ -148,12 +175,12 @@ namespace userdata {
         git_repository* repo;
         git_reference* head;
         int error;
-        std::string path = get_current_dir_name();
+        std::string path = fs::current_path();
         std::string repo_parent;
         
         while (!path.empty() && error != 0) {
             error = git_repository_open(&repo, path.c_str());
-            auto last = path.find_last_of("/");
+            auto last = path.find_last_of('/');
             repo_parent = path.substr(last + 1, path.size()); // +1 to skip "/"
             path = path.substr(0, last);
         }

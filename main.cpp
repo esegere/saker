@@ -10,8 +10,15 @@ int main(int argc, const char* argv[]) {
     // presets
     const auto[hosticon, hostname] = userdata::get_host_icon_and_name();
     const auto[usericon, username, userbg] = userdata::get_user_icon_name_and_bg();
-    auto[diricon, dirparts] = userdata::get_directory_icon_and_parts();
-    auto[git_branch, git_repo_dir, git_status_counts] = userdata::get_git_branch_parent_repo_and_status();
+    auto git_data = userdata::get_git_branch_parent_repo_and_status();
+    const auto git_branch = get<0>(git_data);
+    const auto  git_repo_dir = get<1>(git_data);
+    const auto  git_status_counts = get<2>(git_data);
+    auto dir_info = userdata::get_directory_icon_and_parts(git_repo_dir);
+    const auto diricon = get<0>(dir_info);
+    auto dirparts = get<1>(dir_info);
+    auto subdirs_skipped = get<2>(dir_info);
+    auto git_subdirs_skipped = get<3>(dir_info);
     int line_number;
     cli("l", "0") >> line_number;
     int prev_error_code;
@@ -41,6 +48,8 @@ int main(int argc, const char* argv[]) {
         } else if (git_status_counts.total > 0) {
             dirparts.emplace_back("");
         }
+    } else if (!dirparts.empty() && subdirs_skipped > 0){
+        dirparts.front().insert(0," ");
     }
     
     
@@ -90,7 +99,7 @@ int main(int argc, const char* argv[]) {
                       saker::Icon{
                           hosticon
                       },
-        
+
                       saker::Content{
                           hostname
                       }
@@ -133,22 +142,65 @@ int main(int argc, const char* argv[]) {
     
     
                   saker::Zone{ // directory
-        
+
                       saker::Icon{
                           diricon
                       },
-        
+
                       saker::Content{
-                          git_branch.empty() ? dirparts : std::vector{git_repo_dir}
+                              subdirs_skipped == 0 ? (
+                                git_branch.empty() ?
+                                    dirparts
+                                    : std::vector{git_repo_dir})
+                                                   : std::vector<std::string>()
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
-            
+
                   }.fg(saker::Fg::gray)
                    .bg(saker::BgB::black)
                    .priority(7)
                    .transformToFit(saker::transforming::drop_first_vec)
-                   .endWith(git_branch.empty() ? "\ue0b0" : "\ue0c6"),
-    
+                   .endWith(!git_branch.empty() && subdirs_skipped == 0 ? "\ue0c6" : "\ue0b0"),
+
+
+                  saker::Zone{ // skipped dirs
+
+                          saker::Icon{
+                                  " \uf752 "
+                          },
+
+                          saker::Content{
+                                  std::to_string(subdirs_skipped) + " "
+                          }
+
+                  }.fg(saker::FgB::black)
+                   .bg(saker::Bg::gray)
+                   .priority(7)
+                   .transformToFit(saker::transforming::drop_icon<std::string>)
+                   .showIf(subdirs_skipped > 0)
+                   .endWith("\ue0b0"),
+
+
+                  saker::Zone{ // directory when skipped dirs
+
+                          saker::Content{
+                                          git_branch.empty() ?
+                                          dirparts
+                                          : std::vector{
+                                              subdirs_skipped > 0
+                                              ? " " + git_repo_dir
+                                              : git_repo_dir
+                                          }
+                          }.separatedBy(" \uE0B1 ", false)
+                           .separatorFg(saker::Fg::black)
+
+                  }.fg(saker::Fg::gray)
+                          .bg(saker::BgB::black)
+                          .priority(7)
+                          .transformToFit(saker::transforming::drop_first_vec)
+                          .showIf(subdirs_skipped > 0)
+                          .endWith(git_branch.empty() ? "\ue0b0" : "\ue0c6"),
+
     
                   saker::Zone{ // git branch
             
@@ -241,6 +293,23 @@ int main(int argc, const char* argv[]) {
                   }.bg(git_status_counts.total > 0 ? git_statuses_bg : git_zones_bg)
                    .priority(9)
                    .showIf(!git_repo_dir.empty())
+                   .endWith("\ue0b0"),
+
+                  saker::Zone{ // skipped repo subdirs
+
+                          saker::Icon{
+                                  " \uf752 "
+                          },
+
+                          saker::Content{
+                                  std::to_string(git_subdirs_skipped) + " "
+                          }
+
+                  }.fg(saker::FgB::black)
+                   .bg(saker::Bg::gray)
+                   .priority(9)
+                   .transformToFit(saker::transforming::drop_icon<std::string>)
+                   .showIf(git_subdirs_skipped > 0)
                    .endWith("\ue0b0"),
     
     
