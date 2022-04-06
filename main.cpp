@@ -92,7 +92,7 @@ int main(int argc, const char* argv[]) {
         
                       std::to_string(jobs_managed)
         
-                  }.bg(saker::Bg::red)
+                  }.bg(saker::Bg::gray)
                    .priority(4)
                    .endWith("\ue0b4")
                    .showIf(jobs_managed > 0),
