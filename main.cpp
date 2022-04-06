@@ -43,13 +43,16 @@ int main(int argc, const char* argv[]) {
                 last_to_erase + 1
             );
         }
+        if (git_subdirs_skipped > 0){
+            dirparts.insert(dirparts.begin(), std::to_string(git_subdirs_skipped));
+        }
         if (!dirparts.empty()) {
             dirparts.front().insert(0, " ");
         } else if (git_status_counts.total > 0) {
             dirparts.emplace_back("");
         }
     } else if (!dirparts.empty() && subdirs_skipped > 0){
-        dirparts.front().insert(0," ");
+        dirparts.insert(dirparts.cbegin(),"\uf752 " + std::to_string(subdirs_skipped));
     }
     
     
@@ -148,11 +151,9 @@ int main(int argc, const char* argv[]) {
                       },
 
                       saker::Content{
-                              subdirs_skipped == 0 ? (
                                 git_branch.empty() ?
                                     dirparts
-                                    : std::vector{git_repo_dir})
-                                                   : std::vector<std::string>()
+                                    : std::vector{"\uf752 " + std::to_string(subdirs_skipped), git_repo_dir}
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
 
@@ -161,45 +162,6 @@ int main(int argc, const char* argv[]) {
                    .priority(7)
                    .transformToFit(saker::transforming::drop_first_vec)
                    .endWith(!git_branch.empty() && subdirs_skipped == 0 ? "\ue0c6" : "\ue0b0"),
-
-
-                  saker::Zone{ // skipped dirs
-
-                          saker::Icon{
-                                  " \uf752 "
-                          },
-
-                          saker::Content{
-                                  std::to_string(subdirs_skipped) + " "
-                          }
-
-                  }.fg(saker::FgB::black)
-                   .bg(saker::Bg::gray)
-                   .priority(7)
-                   .transformToFit(saker::transforming::drop_icon<std::string>)
-                   .showIf(subdirs_skipped > 0)
-                   .endWith("\ue0b0"),
-
-
-                  saker::Zone{ // directory when skipped dirs
-
-                          saker::Content{
-                                          git_branch.empty() ?
-                                          dirparts
-                                          : std::vector{
-                                              subdirs_skipped > 0
-                                              ? " " + git_repo_dir
-                                              : git_repo_dir
-                                          }
-                          }.separatedBy(" \uE0B1 ", false)
-                           .separatorFg(saker::Fg::black)
-
-                  }.fg(saker::Fg::gray)
-                          .bg(saker::BgB::black)
-                          .priority(7)
-                          .transformToFit(saker::transforming::drop_first_vec)
-                          .showIf(subdirs_skipped > 0)
-                          .endWith(git_branch.empty() ? "\ue0b0" : "\ue0c6"),
 
     
                   saker::Zone{ // git branch
@@ -294,27 +256,14 @@ int main(int argc, const char* argv[]) {
                    .priority(9)
                    .showIf(!git_repo_dir.empty())
                    .endWith("\ue0b0"),
-
-                  saker::Zone{ // skipped repo subdirs
-
-                          saker::Icon{
-                                  " \uf752 "
-                          },
-
-                          saker::Content{
-                                  std::to_string(git_subdirs_skipped) + " "
-                          }
-
-                  }.fg(saker::FgB::black)
-                   .bg(saker::Bg::gray)
-                   .priority(9)
-                   .transformToFit(saker::transforming::drop_icon<std::string>)
-                   .showIf(git_subdirs_skipped > 0)
-                   .endWith("\ue0b0"),
     
     
                   saker::Zone{ // repo subdir
-            
+
+                      saker::Icon{
+                              git_subdirs_skipped > 0 ? " \uf752" : ""
+                      },
+
                       saker::Content{
                           dirparts
                       }.separatedBy(" \uE0B1 ", false)
