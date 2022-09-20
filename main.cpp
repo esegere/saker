@@ -154,7 +154,9 @@ int main(int argc, const char* argv[]) {
                       saker::Content{
                                 git_branch.empty() ?
                                     dirparts
-                                    : std::vector{"\uf752 " + std::to_string(subdirs_skipped), git_repo_dir}
+                                    : subdirs_skipped > 0
+                                        ? std::vector{"\uf752 " + std::to_string(subdirs_skipped), git_repo_dir}
+                                        : std::vector{git_repo_dir}
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
 
@@ -162,7 +164,7 @@ int main(int argc, const char* argv[]) {
                    .bg(saker::BgB::black)
                    .priority(7)
                    .transformToFit(saker::transforming::drop_first_vec)
-                   .endWith(!git_branch.empty() && subdirs_skipped == 0 ? "\ue0c6" : "\ue0b0"),
+                   .endWith(!git_branch.empty() ? "\ue0c6" : "\ue0b0"),
 
     
                   saker::Zone{ // git branch

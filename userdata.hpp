@@ -32,7 +32,7 @@ namespace userdata {
         // modify only this parameters
         
         constexpr const char* DEFAULT_ICON = "\uf023";
-        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 4;
+        constexpr unsigned int NUMBER_OF_RELEVANT_SUBDIRS = 3;
         const std::map<std::string, std::string> ICONS = icons::special_dirs();
         // creation
         
@@ -69,11 +69,11 @@ namespace userdata {
                 fplus::fwd::take(NUMBER_OF_RELEVANT_SUBDIRS),
                 fplus::fwd::reverse()
             );
+        const int skipped_subdirs = subdirs - (repo_dir_found ? repo_subdirs + 1 : result_string_parts.size());
         repo_subdirs -= NUMBER_OF_RELEVANT_SUBDIRS;
         if (!repo_dir_found || repo_subdirs < 0){
             repo_subdirs = 0;
         }
-        const int skipped_subdirs = subdirs - (repo_dir_found ? repo_subdirs + 1 + NUMBER_OF_RELEVANT_SUBDIRS : result_string_parts.size());
         selected_icon = " " + selected_icon;
         if (!result_string_parts.empty()) {
             result_string_parts.back().append(" ");
