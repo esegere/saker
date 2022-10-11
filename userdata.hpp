@@ -109,8 +109,7 @@ namespace userdata {
         gethostname(hn_char, HOST_NAME_MAX);
         hostname = hn_char;
         std::string hosticon{};
-        if (hostname == "Sergios-MacBook-Pro.local") {
-            hostname = "MacBook-Pro";
+        if (hostname == "MacBook") {
             hosticon = " \uf179 ";
         } else {
             hosticon = " \uE712 ";
