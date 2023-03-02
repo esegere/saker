@@ -11,14 +11,14 @@ int main(int argc, const char* argv[]) {
     const auto[hosticon, hostname] = userdata::get_host_icon_and_name();
     const auto[usericon, username, userbg] = userdata::get_user_icon_name_and_bg();
     auto git_data = userdata::get_git_branch_parent_repo_and_status();
-    const auto git_branch = get<0>(git_data);
-    const auto  git_repo_dir = get<1>(git_data);
-    const auto  git_status_counts = get<2>(git_data);
+    const auto git_branch = std::get<0>(git_data);
+    const auto  git_repo_dir = std::get<1>(git_data);
+    const auto  git_status_counts = std::get<2>(git_data);
     auto dir_info = userdata::get_directory_icon_and_parts(git_repo_dir);
-    const auto diricon = get<0>(dir_info);
-    auto dirparts = get<1>(dir_info);
-    auto subdirs_skipped = get<2>(dir_info);
-    auto git_subdirs_skipped = get<3>(dir_info);
+    const auto diricon = std::get<0>(dir_info);
+    auto dirparts = std::get<1>(dir_info);
+    auto subdirs_skipped = std::get<2>(dir_info);
+    auto git_subdirs_skipped = std::get<3>(dir_info);
     int line_number;
     cli("l", "0") >> line_number;
     int prev_error_code;
@@ -250,7 +250,26 @@ int main(int argc, const char* argv[]) {
                    .priority(8)
                    .showIf(git_status_counts.with_errors > 0),
     
-    
+                  saker::Zone{
+        
+                      saker::Content{
+                          "\uf0a9 "
+                      }.fg(saker::FgB::gray)
+        
+                  }.bg(git_statuses_bg)
+                   .priority(8)
+                   .showIf(git_status_counts.ahead_of_remote > 0),
+  
+                  saker::Zone{
+        
+                      saker::Content{
+                          "\uf0a8 "
+                      }.fg(saker::FgB::gray)
+        
+                  }.bg(git_statuses_bg)
+                   .priority(8)
+                   .showIf(git_status_counts.behind_remote > 0),
+        
                   saker::Zone{ // --finish-- git info
             
                       ""
@@ -277,7 +296,7 @@ int main(int argc, const char* argv[]) {
                    .priority(10)
                    .transformToFit(saker::transforming::drop_first_vec)
                    .showIf(!git_branch.empty() && !dirparts.empty())
-                   .endWith("\ue0b0"),
+                   .endWith("\ue0b0")
         
               }.fg(saker::Fg::black)
                .endWith(" ")

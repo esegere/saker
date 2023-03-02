@@ -1,6 +1,9 @@
 #ifndef PROMPT_USERDATA_HPP
 #define PROMPT_USERDATA_HPP
 
+#include <cstddef>
+#include <git2/branch.h>
+#include <git2/graph.h>
 #include <vector>
 #include <string>
 #include <utility>
@@ -18,13 +21,15 @@
 namespace userdata {
     
     struct GitStatusCounts {
-            int total = 0;
-            int new_ = 0;
-            int modified = 0;
-            int deleted = 0;
-            int renamed = 0;
-            int type_change = 0;
-            int with_errors = 0;
+            unsigned int total = 0;
+            unsigned int new_ = 0;
+            unsigned int modified = 0;
+            unsigned int deleted = 0;
+            unsigned int renamed = 0;
+            unsigned int type_change = 0;
+            unsigned int with_errors = 0;
+            int ahead_of_remote = 0;
+            int behind_remote = 0;
     };
     
     auto get_directory_icon_and_parts(const std::string& git_repo = "") -> std::tuple<std::string, std::vector<std::string>, int, int> {
@@ -90,9 +95,8 @@ namespace userdata {
         std::string user = getenv("USER");
         std::string user_icon;
         saker::BgColor bg = saker::Bg::cyan;
-        if (user == "sergioomargarciarodriguez") {
+        if (user == "sgarcia") {
             user_icon = " \uF007 ";
-            user = "sergio...";
         } else if (user == "root") {
             user_icon = " \uF2dd ";
             bg = saker::Bg::blue;
@@ -112,7 +116,10 @@ namespace userdata {
         if (hostname.find("MacBook") != std::string::npos) {
             hosticon = " \uf179 ";
             hostname = "MacBook";
-        } else {
+        } else if (hostname.find("LAPTOP") != std::string::npos) {
+            hosticon = " \ue73a ";
+            hostname = "WSL";
+        }  else {
             hosticon = " \uE712 ";
         }
         return {hosticon, hostname};
@@ -167,7 +174,7 @@ namespace userdata {
     
     auto get_git_branch_parent_repo_and_status() -> std::tuple<std::string, std::string, GitStatusCounts> {
         namespace fs = std::filesystem;
-        const auto fail = []() {
+        const auto fail = []() { //close everything on failure
             git_libgit2_shutdown();
             return std::make_tuple("", "", GitStatusCounts{});
         };
@@ -189,8 +196,26 @@ namespace userdata {
         if (error != 0) return fail();
         std::string branch_name = git_reference_shorthand(head);
         GitStatusCounts gs = get_status_values(repo);
-        git_libgit2_shutdown();
-        return {branch_name + " ", repo_parent + " ", gs};
+        std::tuple<std::string, std::string, GitStatusCounts> result = {branch_name + " ", repo_parent + " ", gs};
+        const auto abort = [&result](int aor = -1, int br = -1){
+            std::cout << aor << " " << br << std::endl;
+            GitStatusCounts& gs = std::get<2>(result);
+            gs.ahead_of_remote = aor;
+            gs.behind_remote = br;
+            git_libgit2_shutdown();
+            return result;
+        };
+        git_reference* remote_head = nullptr;
+        error = git_branch_upstream(&remote_head, head);
+        if (error != 0) return abort();
+        const git_oid* local_oid = git_reference_target(head);
+        const git_oid* remote_oid = git_reference_target(remote_head);    
+        if (local_oid == NULL || remote_oid == NULL) return abort();
+        size_t ahead = 0;
+        size_t behind = 0;
+        error = git_graph_ahead_behind(&ahead, &behind, repo, local_oid, remote_oid);
+        if (error != 0) return abort();
+        return abort(static_cast<int>(ahead), static_cast<int>(behind));
     }
     
 }

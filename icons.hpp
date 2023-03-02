@@ -8,15 +8,16 @@ namespace icons {
 
     std::map<std::string, std::string> special_dirs() {
         return {
-                {"sergioomargarciarodriguez",       "\ufd24"},
-                {"Users",                           "\uf0c0"},
+                {"sgarcia",       "\ufd24"},
+                {"home",                           "\uf0c0"},
                 {".config",                         "\ue615"},
-                {"Downloads",                       "\uf019"},
+                {"downloads",                       "\uf019"},
                 {"IdeaProjects",                    "\ue256"},
                 {"PycharmProjects",                 "\uf81f"},
                 {"go",                              "\ufcd1"},
                 {"rust",                            "\ue7a8"},
                 {"shell",                           "\ue795"},
+                {"cpp",                           "\ue61d"},
         };
     }
 
