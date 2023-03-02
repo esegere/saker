@@ -198,7 +198,6 @@ namespace userdata {
         GitStatusCounts gs = get_status_values(repo);
         std::tuple<std::string, std::string, GitStatusCounts> result = {branch_name + " ", repo_parent + " ", gs};
         const auto abort = [&result](int aor = -1, int br = -1){
-            std::cout << aor << " " << br << std::endl;
             GitStatusCounts& gs = std::get<2>(result);
             gs.ahead_of_remote = aor;
             gs.behind_remote = br;

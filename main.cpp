@@ -3,6 +3,10 @@
 #include "saker.hpp"
 #include "argh.hpp"
 
+std::string gitNumToString(int num){
+    return num > 1 ? std::to_string(num) : "" ;
+}
+
 int main(int argc, const char* argv[]) {
     
     const auto cli = argh::parser(argv);
@@ -180,7 +184,7 @@ int main(int argc, const char* argv[]) {
                   }.bg(git_zones_bg)
                    .fg(saker::Fg::black)
                    .priority(9)
-                   .endWith(git_status_counts.total > 0 ? "\ue0c6 " : "")
+                   .endWith(git_status_counts.total > 0 ? "\ue0c6" : "")
                    .transformToFit(saker::transforming::drop_icon<std::string>)
                    .showIf(!git_branch.empty()),
     
@@ -188,8 +192,9 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git modified
             
                       saker::Content{
-                          "\ufbfd "
+                          "*" + gitNumToString(git_status_counts.modified)
                       }.fg(saker::FgB::blue)
+                       .style(saker::Style::bold)
             
                   }.bg(git_statuses_bg)
                    .priority(8)
@@ -199,8 +204,9 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git new
             
                       saker::Content{
-                          "\uf916"
+                          "+" + gitNumToString(git_status_counts.new_)
                       }.fg(saker::FgB::green)
+                       .style(saker::Style::bold)
             
                   }.bg(git_statuses_bg)
                    .priority(8)
@@ -210,8 +216,9 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git deleted
             
                       saker::Content{
-                          "\ufb81 "
+                          "-" + gitNumToString(git_status_counts.deleted)
                       }.fg(saker::FgB::red)
+                       .style(saker::Style::bold)
             
                   }.bg(git_statuses_bg)
                    .priority(8)
@@ -221,8 +228,9 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git renamed
             
                       saker::Content{
-                          "\uf138 "
-                      }.fg(saker::FgB::yellow)
+                          "~" + gitNumToString(git_status_counts.renamed)
+                      }.fg(saker::FgB::gray)
+                       .style(saker::Style::bold)
             
                   }.bg(git_statuses_bg)
                    .priority(8)
@@ -232,8 +240,9 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git type change
             
                       saker::Content{
-                          "\uf059 "
+                          "?" + gitNumToString(git_status_counts.type_change)
                       }.fg(saker::FgB::yellow)
+                       .style(saker::Style::bold)
             
                   }.bg(git_statuses_bg)
                    .priority(8)
@@ -243,29 +252,32 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git error
             
                       saker::Content{
-                          "\uf057 "
-                      }.fg(saker::FgB::gray)
+                          "!" + gitNumToString(git_status_counts.with_errors)
+                      }.fg(saker::FgB::yellow)
+                       .style(saker::Style::bold)
             
                   }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.with_errors > 0),
     
-                  saker::Zone{
+                  saker::Zone{ // git ahead of remote
         
                       saker::Content{
-                          "\uf0a9 "
-                      }.fg(saker::FgB::gray)
-        
+                          "⇡" + gitNumToString(git_status_counts.ahead_of_remote) 
+                      }.fg(saker::FgB::magenta)
+                       .style(saker::Style::bold)        
+
                   }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.ahead_of_remote > 0),
   
-                  saker::Zone{
+                  saker::Zone{ // git behind remote
         
                       saker::Content{
-                          "\uf0a8 "
-                      }.fg(saker::FgB::gray)
-        
+                          "⇣" + gitNumToString(git_status_counts.behind_remote)
+                      }.fg(saker::FgB::cyan)
+                       .style(saker::Style::bold)
+                
                   }.bg(git_statuses_bg)
                    .priority(8)
                    .showIf(git_status_counts.behind_remote > 0),
