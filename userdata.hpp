@@ -201,6 +201,7 @@ namespace userdata {
             GitStatusCounts& gs = std::get<2>(result);
             gs.ahead_of_remote = aor;
             gs.behind_remote = br;
+            gs.total += (aor + br);
             git_libgit2_shutdown();
             return result;
         };
