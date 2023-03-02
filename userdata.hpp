@@ -28,8 +28,8 @@ namespace userdata {
             unsigned int renamed = 0;
             unsigned int type_change = 0;
             unsigned int with_errors = 0;
-            int ahead_of_remote = 0;
-            int behind_remote = 0;
+            unsigned int ahead_of_remote = 0;
+            unsigned int behind_remote = 0;
     };
     
     auto get_directory_icon_and_parts(const std::string& git_repo = "") -> std::tuple<std::string, std::vector<std::string>, int, int> {
