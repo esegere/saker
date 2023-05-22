@@ -167,7 +167,7 @@ int main(int argc, const char* argv[]) {
                                 git_branch.empty() ?
                                     dirparts
                                     : subdirs_skipped > 0
-                                        ? std::vector{"\uf752 " + std::to_string(subdirs_skipped), userdata::shorten_dir_name(git_repo_dir)}
+                                        ? std::vector{"\uf4d4 " + std::to_string(subdirs_skipped), userdata::shorten_dir_name(git_repo_dir)}
                                         : std::vector{userdata::shorten_dir_name(git_repo_dir)}
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
@@ -303,7 +303,7 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // repo subdir
 
                       saker::Icon{
-                              git_subdirs_skipped > 0 ? " \uf752" : ""
+                              git_subdirs_skipped > 0 ? " \uf4d4" : ""
                       },
 
                       saker::Content{
