@@ -97,7 +97,7 @@ int main(int argc, const char* argv[]) {
                       }.bg(saker::Bg::blue)
                        .fg(saker::FgB::gray)
                        .priority(4)
-                       .endWith( userdata::is_lf_active() ? "\ue0b4" : "")
+                       .endWith( userdata::is_lf_active() ? "" : "\ue0b4")
                        .showIf(jobs_managed > 0),
 
                     saker::Zone{ // lf running in the background
