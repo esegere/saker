@@ -29,10 +29,8 @@ int main(int argc, const char* argv[]) {
     cli("e", "0") >> prev_error_code;
     int jobs_managed;
     cli("j", "0") >> jobs_managed;
-    std::string extra_info;
-    cli("xc", "") >> extra_info;
-    std::string extra_icon;
-    cli("xi", "") >> extra_icon;
+    std::string venv_info;
+    cli("xc", "") >> venv_info;
     
     if (!git_branch.empty()) {
         const auto last_to_erase = std::find_if(
@@ -56,7 +54,7 @@ int main(int argc, const char* argv[]) {
             dirparts.emplace_back("");
         }
     } else if (!dirparts.empty() && subdirs_skipped > 0){
-        dirparts.insert(dirparts.cbegin(),"\uf752 " + std::to_string(subdirs_skipped));
+      dirparts.insert(dirparts.cbegin(),"\uf4d4 " + std::to_string(subdirs_skipped));
     }
     
     
@@ -91,16 +89,26 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // jobs running in the background
         
                       saker::Icon{
-                          " \uf56e "
+                          " \ueb8f "
                       },
-        
+
                       std::to_string(jobs_managed)
-        
-                  }.bg(saker::Bg::blue)
-                   .fg(saker::FgB::gray)
-                   .priority(4)
-                   .endWith("\ue0b4")
-                   .showIf(jobs_managed > 0),
+
+                      }.bg(saker::Bg::blue)
+                       .fg(saker::FgB::gray)
+                       .priority(4)
+                       .endWith( userdata::is_lf_active() ? "\ue0b4" : "")
+                       .showIf(jobs_managed > 0),
+
+                    saker::Zone{ // lf running in the background
+
+                        " \uf187 "
+
+                    }.bg(saker::Bg::blue)
+                    .fg(saker::Fg::black)
+                    .priority(3)
+                    .endWith("\ue0b4")
+                    .showIf(userdata::is_lf_active()),
     
                   saker::Zone{ // host
         
@@ -132,18 +140,18 @@ int main(int argc, const char* argv[]) {
                    .endWith("\ue0b4"),
     
     
-                  saker::Zone{ // extra info
+                  saker::Zone{ // venv info
         
                       saker::Icon{
-                          " " + extra_icon + " "
+                          " \ue235 "
                       },
         
                       saker::Content{
-                          extra_info
+                          venv_info
                       }
         
                   }.bg(saker::Bg::yellow)
-                   .showIf(!extra_info.empty() && !extra_icon.empty())
+                   .showIf(!venv_info.empty())
                    .transformToFit(saker::transforming::drop_content<std::string>)
                    .priority(4)
                    .endWith("\ue0b4"),
@@ -159,8 +167,8 @@ int main(int argc, const char* argv[]) {
                                 git_branch.empty() ?
                                     dirparts
                                     : subdirs_skipped > 0
-                                        ? std::vector{"\uf752 " + std::to_string(subdirs_skipped), git_repo_dir}
-                                        : std::vector{git_repo_dir}
+                                        ? std::vector{"\uf752 " + std::to_string(subdirs_skipped), userdata::shorten_dir_name(git_repo_dir)}
+                                        : std::vector{userdata::shorten_dir_name(git_repo_dir)}
                       }.separatedBy(" \uE0B1 ", true)
                        .separatorFg(saker::Fg::black)
 
@@ -184,7 +192,7 @@ int main(int argc, const char* argv[]) {
                   }.bg(git_zones_bg)
                    .fg(saker::Fg::black)
                    .priority(9)
-                   .endWith(git_status_counts.total > 0 ? "\ue0c6" : "")
+                   .endWith(git_status_counts.total > 0 ? "\ue0c6 " : "")
                    .transformToFit(saker::transforming::drop_icon<std::string>)
                    .showIf(!git_branch.empty()),
     

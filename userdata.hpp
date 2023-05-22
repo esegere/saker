@@ -6,6 +6,7 @@
 #include <git2/graph.h>
 #include <vector>
 #include <string>
+#include <cstring>
 #include <utility>
 #include "icons.hpp"
 #include <fplus/fplus.hpp>
@@ -108,26 +109,29 @@ namespace userdata {
     }
     
     auto get_host_icon_and_name() -> std::pair<std::string, std::string> {
-        std::string hostname;
-        char hn_char[HOST_NAME_MAX];
-        gethostname(hn_char, HOST_NAME_MAX);
-        hostname = hn_char;
-        std::string hosticon{};
-        if (hostname.find("MacBook") != std::string::npos) {
-            hosticon = " \uf179 ";
-            hostname = "MacBook";
-        } else if (hostname.find("LAPTOP") != std::string::npos) {
-            hosticon = " \ue73a ";
-            hostname = "WSL";
-        }  else {
-            hosticon = " \uE712 ";
-        }
-        return {hosticon, hostname};
+      std::string hostname;
+      char hn_char[HOST_NAME_MAX];
+      gethostname(hn_char, HOST_NAME_MAX);
+      hostname = hn_char;
+      std::string hosticon{};
+      if (hostname.find("MacBook") != std::string::npos) {
+        hosticon = " \uf179 ";
+        hostname = "MacBook";
+      } else if (hostname.find("LAPTOP") != std::string::npos) {
+        hosticon = " \ue73a ";
+        hostname = "WSL";
+      } else if (hostname == "LY0QQ74VV5"){
+        hostname = "Disco";
+        hosticon = " \uf179 ";
+      } else {
+        hosticon = " \uE712 ";
+      }
+      return {hosticon, hostname};
     }
     
     auto get_status_values(git_repository* repo) -> GitStatusCounts {
         git_status_list* status;
-        git_status_options statusopt = {GIT_STATUS_OPTIONS_INIT};
+        git_status_options statusopt = GIT_STATUS_OPTIONS_INIT ;
         
         statusopt.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR;
         statusopt.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED |
@@ -197,6 +201,7 @@ namespace userdata {
         std::string branch_name = git_reference_shorthand(head);
         GitStatusCounts gs = get_status_values(repo);
         std::tuple<std::string, std::string, GitStatusCounts> result = {branch_name + " ", repo_parent + " ", gs};
+
         const auto abort = [&result](int aor = -1, int br = -1){
             GitStatusCounts& gs = std::get<2>(result);
             gs.ahead_of_remote = aor;
@@ -218,6 +223,22 @@ namespace userdata {
         return abort(static_cast<int>(ahead), static_cast<int>(behind));
     }
     
+    auto shorten_dir_name(const std::string& str) -> std::string {
+      constexpr const char* search_str = "ss-case-builder";
+      constexpr const char* replace_str = "\uf092";
+
+      const auto pos = str.find(search_str);
+      if (pos != std::string::npos){
+        std::string modified = str;
+        modified.replace(pos, std::strlen(search_str), replace_str);
+        return modified;
+      }
+      return str;
+    }
+
+    auto is_lf_active() -> bool {
+      return getenv("lf") != NULL;
+    }
 }
 
 #endif //PROMPT_USERDATA_HPP

@@ -6,18 +6,19 @@
 
 namespace icons {
 
-    std::map<std::string, std::string> special_dirs() {
+    auto special_dirs() -> std::map<std::string, std::string> {
         return {
-                {"sgarcia",       "\ufd24"},
-                {"home",                           "\uf0c0"},
+                {"sgarcia",                         "\ue617"},
+                {"home",                            "\uf0c0"},
                 {".config",                         "\ue615"},
                 {"downloads",                       "\uf019"},
-                {"IdeaProjects",                    "\ue256"},
-                {"PycharmProjects",                 "\uf81f"},
-                {"go",                              "\ufcd1"},
+                {"Downloads",                       "\uf019"},
+                {"IdeaProjects",                    "\ue634"},
+                {"PycharmProjects",                 "\ue73c"},
+                {"go",                              "\ue65e"},
                 {"rust",                            "\ue7a8"},
                 {"shell",                           "\ue795"},
-                {"cpp",                           "\ue61d"},
+                {"cpp",                             "\ue61d"},
         };
     }
 
