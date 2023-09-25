@@ -200,7 +200,7 @@ int main(int argc, const char* argv[]) {
                   saker::Zone{ // git modified
             
                       saker::Content{
-                          "\uf444" + gitNumToString(git_status_counts.modified)
+                          "\uf444 " + gitNumToString(git_status_counts.modified)
                       }.fg(saker::FgB::blue)
                        .style(saker::Style::bold)
             

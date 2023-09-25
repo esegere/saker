@@ -96,7 +96,7 @@ namespace userdata {
         std::string user = getenv("USER");
         std::string user_icon;
         saker::BgColor bg = saker::Bg::cyan;
-        if (user == "sgarcia") {
+        if (user == "sergio.garcia") {
             user_icon = " \uF007 ";
         } else if (user == "root") {
             user_icon = " \uF2dd ";
@@ -120,8 +120,8 @@ namespace userdata {
       } else if (hostname.find("LAPTOP") != std::string::npos) {
         hosticon = " \ue73a ";
         hostname = "WSL";
-      } else if (hostname == "LY0QQ74VV5"){
-        hostname = "Disco";
+      } else if (hostname.find("M00184") != std::string::npos){
+        hostname = "GL";
         hosticon = " \uf179 ";
       } else {
         hosticon = " \uE712 ";
