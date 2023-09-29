@@ -8,7 +8,7 @@ namespace icons {
 
     auto special_dirs() -> std::map<std::string, std::string> {
         return {
-                {"sgarcia",                         "\ue617"},
+                {"sergio.garcia",                   "\ue617"},
                 {"home",                            "\uf0c0"},
                 {".config",                         "\ue615"},
                 {"downloads",                       "\uf019"},

@@ -221,20 +221,7 @@ namespace userdata {
         error = git_graph_ahead_behind(&ahead, &behind, repo, local_oid, remote_oid);
         if (error != 0) return abort();
         return abort(static_cast<int>(ahead), static_cast<int>(behind));
-    }
-    
-    auto shorten_dir_name(const std::string& str) -> std::string {
-      constexpr const char* search_str = "ss-case-builder";
-      constexpr const char* replace_str = "\uf092";
-
-      const auto pos = str.find(search_str);
-      if (pos != std::string::npos){
-        std::string modified = str;
-        modified.replace(pos, std::strlen(search_str), replace_str);
-        return modified;
-      }
-      return str;
-    }
+    }    
 
     auto is_lf_active() -> bool {
       return getenv("lf") != NULL;
