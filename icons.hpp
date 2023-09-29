@@ -13,12 +13,13 @@ namespace icons {
                 {".config",                         "\ue615"},
                 {"downloads",                       "\uf019"},
                 {"Downloads",                       "\uf019"},
-                {"IdeaProjects",                    "\ue634"},
+                {"IdeaProjects",                    "\ue737"},
                 {"PycharmProjects",                 "\ue73c"},
                 {"go",                              "\ue65e"},
                 {"rust",                            "\ue7a8"},
                 {"shell",                           "\ue795"},
                 {"cpp",                             "\ue61d"},
+                {"haskell",                         "\ue777"},
         };
     }
 
