@@ -114,15 +114,15 @@ namespace userdata {
       gethostname(hn_char, HOST_NAME_MAX);
       hostname = hn_char;
       std::string hosticon{};
-      if (hostname.find("MacBook") != std::string::npos) {
-        hosticon = " \uf179 ";
-        hostname = "MacBook";
+      if (hostname.find("ip") != std::string::npos) {
+        hosticon = " \uf511 ";
+        hostname = "WireGuard";
       } else if (hostname.find("LAPTOP") != std::string::npos) {
         hosticon = " \ue73a ";
         hostname = "WSL";
       } else if (hostname.find("M00184") != std::string::npos){
-        hostname = "GL";
         hosticon = " \uf179 ";
+        hostname = "Mac";
       } else {
         hosticon = " \uE712 ";
       }
